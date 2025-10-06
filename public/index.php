@@ -6,12 +6,21 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hello A.I. Bot!</title>
+    <title>Pairfect - Your Wine Pairing Assistant</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <script type="module">
         window.addEventListener('load', (event) => {
 
+            document.querySelector(".message").addEventListener('keydown', e => {
+                if (e.key === 'Enter') document.querySelector(".sendMessage").click();
+            });
+
+
             document.querySelector(".sendMessage").addEventListener('click', (event) => {
+                const val = document.querySelector(".message").value.trim();
+                if (!val) return;
+
+
 
                 event.currentTarget.classList.add('is-loading');
                 event.currentTarget.disabled = true;
@@ -44,17 +53,18 @@
                 document.querySelector(".message").value = "";
 
                 fetch('requestmanager.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: payload,
-                }).then(response => response.json())
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: payload,
+                    }).then(response => response.json())
                     .then(data => {
 
                         let currHour = new Date();
 
-                        data.responseMessage = data.responseMessage.replace("\n", "<br>");
+                        data.responseMessage = (data.responseMessage || '').replace(/\n/g, '<br>');
+
 
                         let aiMsgTemplate = `<div class="columns">
                                                 <div class="column">
@@ -90,7 +100,7 @@
                     <div class="columns">
                         <div class="column has-text-centered">
                             <h1 class="title">
-                                Hello A.I. Bot!
+                                Pairfect - Your Wine Pairing Assistant
                             </h1>
                         </div>
                     </div>
