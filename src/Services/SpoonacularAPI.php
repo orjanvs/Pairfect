@@ -10,17 +10,21 @@ if (!$SPOONACULAR_API_KEY) {
     throw new Exception("Spoonacular API key not set in environment variables.");
 };
 
+// Builds the request URL
 $spoonacularURL = $SPOONACULAR_API_ENDPOINT_URL 
 . "?food=" 
 . urlencode($food) 
 . "&apiKey=" 
 . $SPOONACULAR_API_KEY;
 
+// Initialize cURL session
 $ch = curl_init($spoonacularURL);
 $param = array(
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_TIMEOUT => 10,
 );
+
+// Set cURL options and execute the request
 curl_setopt_array($ch, $param);
 $spoonacularResponse = curl_exec($ch);
 $spoonacularResInfo = curl_getinfo($ch);
