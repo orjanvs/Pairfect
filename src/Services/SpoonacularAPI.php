@@ -30,7 +30,6 @@ $spoonacularResponse = curl_exec($ch);
 curl_close($ch);
 
 $spoonacularResponseJson = json_decode($spoonacularResponse, true);
-$pairedWines = $spoonacularResponseJson['pairedWines'] ?? [];
 $pairingText = $spoonacularResponseJson['pairingText'] ?? "No pairing information available.";
 
 return [
