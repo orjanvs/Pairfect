@@ -37,7 +37,7 @@
 
                     <div class="columns">
                         <div class="column">
-                            <input class="input message" type="text" placeholder="Type your message">
+                            <input class="input message" type="text" placeholder="Type your message" maxlength="200">
                         </div>
                         <div class="column is-narrow">
                             <button class="button is-info sendMessage">

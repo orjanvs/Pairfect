@@ -6,28 +6,39 @@ use GeminiAPI\Resources\Parts\TextPart;
 class GeminiAPI
 {
     private Client $client;
-    private string $modelName = "gemini-2.5-flash";
+    private const MODEL = "gemini-2.5-flash";
 
     public function __construct()
     {
+        if (!isset($_ENV['GEMINI_API_KEY']) || empty($_ENV['GEMINI_API_KEY'])) {
+            throw new RuntimeException("Gemini API key not set in environment variables.");
+        }
         $this->client = new Client($_ENV['GEMINI_API_KEY']);
     }
 
+    // Private helper method for text generation
     private function generateText(string $prompt): string
     {
-        $resp = $this->client->generativeModel($this->modelName)
+        try {
+        $resp = $this->client->generativeModel(self::MODEL)
             ->generateContent(new TextPart($prompt));
-        return trim($resp->text());
+        return trim($resp->text()); 
+        } catch (Exception $e) {
+            return "The text could not be generated. Please try again.";
+        }
     }
 
+    // Extract keyword from user message
     public function extractKeyword(string $message): string
     {
         $prompt =
             <<<TXT
         INSTRUCTION:
         - When user is inputting a dish: 
-        extract the main ingredient, dish name, or cuisine type as one word.
+        If ingredient or cuisine -> return exactly one word that best represents the main ingredient or cuisine.
+        If specific dish name -> return the actual dish name as is.
         It has to make sense as a food item for wine pairing when viewing the dish as a whole.
+        If not food related -> return nothing.
         - Always translate the keyword to English.
         DATA:
         - User input: $message
@@ -43,7 +54,7 @@ class GeminiAPI
         INSTRUCTION: 
         - Enhance the following wine pairing suggestion by making it more engaging and informative.
         - Have to use spoonacular api response
-        - If there is no response from the spoonacular api, 
+        - If no pairing information from the spoonacular api is available, 
         give a more general wine pairing advice for the food item.
         - Use a max of 100 words.
         - Don't include special characters or formatting such as *. Use plain text only.
@@ -52,7 +63,7 @@ class GeminiAPI
         - Respond in the same language as the input.
 
         DATA: 
-        - Food item: $message
+        - User input: $message
         - Source info: $pairingText
         TXT;
 
