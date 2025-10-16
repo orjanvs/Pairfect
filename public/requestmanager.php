@@ -43,13 +43,3 @@ try {
         'responseMessage' => 'An error occurred while processing your request. Please try again.'
     ]);
 }
-/* $geminiAPI = new GeminiAPI();
-$keyword = $geminiAPI->extractKeyword($message);
-
-$data = getWinePairing($keyword);
-$pairingText = $data['pairingText'] ?? "No pairing information available.";
-
-
-$geminiEnhancedResponse = $geminiAPI->enhanceWithGemini($message, $pairingText);
-
-echo json_encode(['responseMessage' => $geminiEnhancedResponse]); */
