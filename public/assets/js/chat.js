@@ -7,6 +7,22 @@ window.addEventListener('load', (event) => {
         return `${h}:${m}`;
     }
 
+    const chatBox = document.querySelector(".messageHistory");
+    const currHour = new Date();
+    const starterMessage = `<div class="columns">
+                                <div class="column">
+                                    <div class="notification is-info">
+                                        <h6 class="subtitle is-6">${formatTime(currHour)}</h6>
+                                        Hi! I'm Pairfect, your AI wine pairing assistant. 
+                                        Ask me for a wine pairing based on a food, cuisine, or ingredient!
+                                        I will try to give you the best possible wine pairing suggestions.
+                                    </div>
+                                </div>
+                                <div class="column is-one-third"></div>
+                            </div>`;
+
+    chatBox.innerHTML += starterMessage;
+
     document.querySelector(".message").addEventListener('keydown', e => {
         if (e.key === 'Enter') document.querySelector(".sendMessage").click();
     });
@@ -15,8 +31,6 @@ window.addEventListener('load', (event) => {
     document.querySelector(".sendMessage").addEventListener('click', (event) => {
         const val = document.querySelector(".message").value.trim();
         if (!val) return;
-
-
 
         event.currentTarget.classList.add('is-loading');
         event.currentTarget.disabled = true;
@@ -30,7 +44,7 @@ window.addEventListener('load', (event) => {
                                         <div class="column is-one-third"></div>
                                         <div class="column">
                                             <div class="notification is-success">
-                                                <h6 class="subtitle is-6">${currHour.formatTime()}</h6>
+                                                <h6 class="subtitle is-6">${formatTime(currHour)}</h6>
                                                 ${document.querySelector(".message").value}
                                             </div>
                                         </div>
@@ -65,7 +79,7 @@ window.addEventListener('load', (event) => {
                 let aiMsgTemplate = `<div class="columns">
                                                 <div class="column">
                                                     <div class="notification is-info">
-                                                        <h6 class="subtitle is-6">${currHour.formatTime()}</h6>
+                                                        <h6 class="subtitle is-6">${formatTime(currHour)}</h6>
                                                         ${data.responseMessage}
                                                     </div>
                                                 </div>

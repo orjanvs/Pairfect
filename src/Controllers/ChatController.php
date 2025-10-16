@@ -19,7 +19,7 @@ class ChatController
             $keyword = $geminiAPI->extractKeyword($message);
             $keyword = mb_strtolower(trim($keyword));
 
-            if ($keyword === 'none' || $keyword === '') {
+            if ($keyword === "none" || $keyword === "") {
                 return [
                     "responseMessage" => "Hi! Tell me a dish, ingredient, or cuisine and I'll suggest a wine pairing for it."
                 ];
