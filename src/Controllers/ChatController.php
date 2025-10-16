@@ -7,13 +7,11 @@ class ChatController
 {
     public function handleMessage(string $message)
     {
-        $message = trim($message);
         if ($message === '') {
             return [
                 "responseMessage" => "Please enter a valid message."
             ];
         }
-
         try {
             $geminiAPI = new GeminiAPI();
 
@@ -21,11 +19,12 @@ class ChatController
             $keyword = $geminiAPI->extractKeyword($message);
             $keyword = mb_strtolower(trim($keyword));
 
-            if (empty($keyword)) {
+            if ($keyword === 'none' || $keyword === '') {
                 return [
-                    "responseMessage" => "Hi! sTell me a dish, ingredient, or cuisine and I'll suggest a wine pairing for it."
+                    "responseMessage" => "Hi! Tell me a dish, ingredient, or cuisine and I'll suggest a wine pairing for it."
                 ];
             }
+
 
             // Get wine pairing from Spoonacular API using the keyword
             $spoonacularData = getWinePairing($keyword);

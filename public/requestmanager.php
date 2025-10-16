@@ -40,6 +40,6 @@ try {
     echo json_encode($response, JSON_UNESCAPED_UNICODE);
 } catch (Throwable $e) {
     echo json_encode([
-        'responseMessage' => 'An error occurred while processing your request. Please try again.'
+        'responseMessage' => 'Oh no! An error occurred while processing your request. Please try again.'
     ]);
 }

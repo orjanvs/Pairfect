@@ -38,7 +38,7 @@ class GeminiAPI
         If ingredient or cuisine -> return exactly one word that best represents the main ingredient or cuisine.
         If specific dish name -> return the actual dish name as is.
         It has to make sense as a food item for wine pairing when viewing the dish as a whole.
-        If not food related -> return nothing.
+        If not a food, cuisine, or ingredient -> return the string "none".
         - Always translate the keyword to English.
         DATA:
         - User input: $message
