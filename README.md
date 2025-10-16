@@ -1,7 +1,7 @@
 # Dependencies
 
 ## .env and API key
-To run, a .env file must be created in the root directory of the repo and then a Spoonacular API key and Gemini API key must be added as seperate environment variables:
+To run, a .env file must be created in the root directory of the repo and then a Spoonacular API key and Gemini API key must be added as separate environment variables:
 * `SPOONACULAR_API_KEY=insert api key here`
 * `GEMINI_API_KEY=insert api key here`.
 

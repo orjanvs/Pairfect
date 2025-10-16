@@ -23,7 +23,7 @@ class ChatController
 
             if (empty($keyword)) {
                 return [
-                    "responseMessage" => "Hi!  tell me  a dish, ingredient, or cuisine and I'll suggest a wine pairing for it."
+                    "responseMessage" => "Hi! sTell me a dish, ingredient, or cuisine and I'll suggest a wine pairing for it."
                 ];
             }
 
