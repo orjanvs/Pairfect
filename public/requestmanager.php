@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-require __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../src/Controllers/ChatController.php';
 
 if (!file_exists(dirname(__DIR__) . '/.env')) {
