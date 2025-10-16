@@ -3,9 +3,6 @@
 use GeminiAPI\Client;
 use GeminiAPI\Resources\Parts\TextPart;
 
-require __DIR__ . '/../../vendor/autoload.php';
-
-
 class GeminiAPI
 {
     private Client $client;
