@@ -15,12 +15,6 @@ $message = trim($input['message'] ?? '');
 $geminiAPI = new GeminiAPI();
 $keyword = $geminiAPI->extractKeyword($message);
 
-
-/* if ($food === '') {
-    echo json_encode(['responseMessage' => 'Please provide a food item to get wine pairing suggestions, e.g., "steak".']);
-    exit;
-} */
-
 $data = getWinePairing($keyword);
 $pairingText = $data['pairingText'] ?? "No pairing information available.";
 
