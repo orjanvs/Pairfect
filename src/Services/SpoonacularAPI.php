@@ -27,7 +27,6 @@ $param = array(
 // Set cURL options and execute the request
 curl_setopt_array($ch, $param);
 $spoonacularResponse = curl_exec($ch);
-$spoonacularResInfo = curl_getinfo($ch);
 curl_close($ch);
 
 $spoonacularResponseJson = json_decode($spoonacularResponse, true);

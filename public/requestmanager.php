@@ -10,16 +10,21 @@ require __DIR__ . '/../src/Services/SpoonacularAPI.php';
 require __DIR__ . '/../src/Services/GeminiAPI.php';
 
 $input = json_decode(file_get_contents('php://input'), true);
-$food = trim($input['message'] ?? '');
+$message = trim($input['message'] ?? '');
 
-if ($food === '') {
+$geminiAPI = new GeminiAPI();
+$keyword = $geminiAPI->extractKeyword($message);
+
+
+/* if ($food === '') {
     echo json_encode(['responseMessage' => 'Please provide a food item to get wine pairing suggestions, e.g., "steak".']);
     exit;
-}
+} */
 
-$data = getWinePairing($food);
+$data = getWinePairing($keyword);
 $pairingText = $data['pairingText'] ?? "No pairing information available.";
 
-$geminiEnhancedResponse = enhanceWithGemini($food, $pairingText);
+
+$geminiEnhancedResponse = $geminiAPI->enhanceWithGemini($message, $pairingText);
 
 echo json_encode(['responseMessage' => $geminiEnhancedResponse]);
