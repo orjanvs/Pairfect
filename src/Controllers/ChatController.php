@@ -1,6 +1,5 @@
 <?php
 
-require __DIR__ . '/../../vendor/autoload.php';
 require __DIR__ . '/../Services/GeminiAPI.php';
 require __DIR__ . '/../Services/SpoonacularAPI.php';
 

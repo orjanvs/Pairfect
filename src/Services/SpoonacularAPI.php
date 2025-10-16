@@ -34,7 +34,6 @@ $pairedWines = $spoonacularResponseJson['pairedWines'] ?? [];
 $pairingText = $spoonacularResponseJson['pairingText'] ?? "No pairing information available.";
 
 return [
-    'pairedWines' => $pairedWines,
     'pairingText' => $pairingText
 ];
 }
