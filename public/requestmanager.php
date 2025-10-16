@@ -7,16 +7,18 @@ $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
 require __DIR__ . '/../src/Services/SpoonacularAPI.php';
+require __DIR__ . '/../src/Services/GeminiAPI.php';
 
 $input = json_decode(file_get_contents('php://input'), true);
-$food = trim($input['message'] ?? '');
+$message = trim($input['message'] ?? '');
 
-if ($food === '') {
-    echo json_encode(['responseMessage' => 'Please provide a food item to get wine pairing suggestions, e.g., "steak".']);
-    exit;
-}
+$geminiAPI = new GeminiAPI();
+$keyword = $geminiAPI->extractKeyword($message);
 
-$data = getWinePairing($food);
+$data = getWinePairing($keyword);
 $pairingText = $data['pairingText'] ?? "No pairing information available.";
 
-echo json_encode(['responseMessage' => $pairingText]);
+
+$geminiEnhancedResponse = $geminiAPI->enhanceWithGemini($message, $pairingText);
+
+echo json_encode(['responseMessage' => $geminiEnhancedResponse]);
