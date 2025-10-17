@@ -1,21 +1,20 @@
 <?php 
 
 include_once __DIR__ . '/../../Repositories/UserRepository.php';
-include_once __DIR__ . '/../Services/Auth/PasswordHasher.php';
 
 class UserController
 {
     private UserRepository $userRepository;
 
-    public function __construct(PDO $pdo)
+    public function __construct(UserRepository $userRepository)
     {
-        $this->userRepository = new UserRepository($pdo);
+        $this->userRepository = $userRepository;
     }
 
     // Register a new user
     public function registerUser(string $username, string $email, string $password): bool
     {
-        $passwordHash = passwordHasher($password); // Use simple password hashing function
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT); // Hash password
         return $this->userRepository->createUser($username, $email, $passwordHash);
     }
 
@@ -28,7 +27,7 @@ class UserController
     // Update user password
     public function updateUserPassword(int $userId, string $newPassword): bool
     {
-        $passwordHash = passwordHasher($newPassword);
+        $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT); // Hash new password
         return $this->userRepository->updateUserPassword($userId, $passwordHash);
     }
 
@@ -38,22 +37,3 @@ class UserController
         return $this->userRepository->deleteUser($userId);
     }
 }
-
-
-// register user for test
-
-function testRegisterUser($pdo) {
-$userController = new UserController($pdo);
-try {
-    $user = $userController->registerUser('testuser1', 'test1@example.com', 'password123');
-    if ($user) { 
-    echo "User registered successfully.";
-    } else {
-    echo "Failed to register user.";
-    }
-} catch (Exception $e) {
-    echo "Error registering user: " . $e->getMessage();
-}
-}
-
-testRegisterUser($pdo);
