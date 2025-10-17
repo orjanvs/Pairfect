@@ -23,6 +23,7 @@ $message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
 $message = strip_tags($message);
 $message = trim($message);
 
+// Limit user input message length
 $maxLength = 200;
 if (mb_strlen($message) > $maxLength) {
     echo json_encode(['responseMessage' => "Message exceeds maximum length of $maxLength characters."]);
@@ -30,13 +31,16 @@ if (mb_strlen($message) > $maxLength) {
 }
 
 try {
+    // Handle the chat message
     $controller = new ChatController();
     $response = $controller->handleMessage($message);
 
+    // Check if responseMessage is set
     if (!isset($response['responseMessage'])) {
         $response['responseMessage'] = "Sorry, something went wrong. Please try again.";
     }
 
+    // Return the response as JSON
     echo json_encode($response, JSON_UNESCAPED_UNICODE);
 } catch (Throwable $e) {
     echo json_encode([

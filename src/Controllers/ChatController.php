@@ -5,6 +5,12 @@ require __DIR__ . '/../Services/SpoonacularAPI.php';
 
 class ChatController
 {
+    /**
+     * Handle user message and return wine pairing suggestion
+     * @param string $message The user input message
+     * @return array $response The response containing the wine pairing suggestion
+     * @throws Throwable if any error occurs during processing
+     */
     public function handleMessage(string $message)
     {
         if ($message === '') {
@@ -35,7 +41,7 @@ class ChatController
 
             return [
                 "responseMessage" => $geminiEnhancedResponse,
-                // debug info for development purpose, delete it in production
+                // debug info, delete before delivery
                 "debug" => [
                     "keyword" => $keyword,
                     "spoonacularData" => $spoonacularData

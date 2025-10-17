@@ -1,5 +1,11 @@
 <?php
 
+/** 
+ * Fetch wine pairing information from Spoonacular API
+ * @param string $food The food item to get wine pairing for
+ * @return array $response The wine pairing data from Spoonacular API
+ * @throws Exception if API key is not set
+ */
 function getWinePairing(string $food)
 {
 
