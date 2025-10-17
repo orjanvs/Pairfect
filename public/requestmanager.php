@@ -10,18 +10,13 @@ if (!file_exists(dirname(__DIR__) . '/.env')) {
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
-
+// Fetches user input from frontend 
 $input = json_decode(file_get_contents('php://input'), true);
-$message = trim($input['message'] ?? '');
+$message = trim($input['message'] ?? ''); // Trim whitespace
 if ($message === '') {
     echo json_encode(['responseMessage' => 'Please enter a valid message.']);
     exit;
 }
-
-// Sanitize input to prevent XSS attacks
-$message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
-$message = strip_tags($message);
-$message = trim($message);
 
 // Limit user input message length
 $maxLength = 200;
