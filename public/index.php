@@ -12,6 +12,33 @@
 </head>
 
 <body>
+    <!-- Site Header -->
+    <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="./">
+                    <strong>Pairfect</strong>
+                </a>
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="mainNav">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+
+            <div id="mainNav" class="navbar-menu">
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <a class="button is-light" href="./register.php">Register</a>
+                            <a class="button is-primary" href="./login.php">Log in</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <section class="section">
         <div class="container">
             <div class="columns  box">
@@ -57,6 +84,22 @@
             </div>
         </div>
     </section>
+    <script>
+        // Bulma navbar burger toggle for mobile
+        document.addEventListener('DOMContentLoaded', function () {
+            var burgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+            burgers.forEach(function (burger) {
+                burger.addEventListener('click', function () {
+                    var target = burger.dataset.target;
+                    var $target = document.getElementById(target);
+                    burger.classList.toggle('is-active');
+                    if ($target) {
+                        $target.classList.toggle('is-active');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
