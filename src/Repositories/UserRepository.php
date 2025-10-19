@@ -2,7 +2,7 @@
 
 include_once __DIR__ . '/../Database/db.inc.php';
 
-class UserRepository
+class UserRepository implements IUserRepository
 {
     private PDO $pdo;
 
