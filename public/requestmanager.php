@@ -12,7 +12,7 @@ $dotenv->load();
 
 // Fetches user input from frontend 
 $input = json_decode(file_get_contents('php://input'), true);
-$message = trim($input['message'] ?? ''); // Trim whitespace
+$message = trim($input['message'] ?? ''); 
 if ($message === '') {
     echo json_encode(['responseMessage' => 'Please enter a valid message.']);
     exit;
@@ -30,12 +30,11 @@ try {
     $controller = new ChatController();
     $response = $controller->handleMessage($message);
 
-    // Check if responseMessage is set
     if (!isset($response['responseMessage'])) {
         $response['responseMessage'] = "Sorry, something went wrong. Please try again.";
     }
 
-    // Return the response as JSON
+    // Return response as JSON
     echo json_encode($response, JSON_UNESCAPED_UNICODE);
 } catch (Throwable $e) {
     echo json_encode([
