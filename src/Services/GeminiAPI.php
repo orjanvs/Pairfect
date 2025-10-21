@@ -70,7 +70,7 @@ class GeminiAPI
     {
         $prompt = <<<TXT
         INSTRUCTION: 
-        - Enhance the following wine pairing suggestion by making it more engaging and informative from
+        - Enhance the following FACTS by making it more engaging and informative from
         the provided FACTS. 
         - If no pairing information from the spoonacular api is available, 
         give a more general wine pairing advice for the food item.
