@@ -1,0 +1,149 @@
+/* ==============================
+   PAIRFECT STYLESHEET
+   ============================== */
+
+/* ====== GLOBAL STYLES ====== */
+body {
+    background-color: #f8f7f2 !important;
+    color: #222;
+    font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+/* ====== NAVBAR CONTAINER ====== */
+.navbar {
+    background-color: #f8f7f2 !important;
+    position: relative;
+    min-height: 160px; /* tilpass høyde til logo */
+    box-shadow: none;
+   
+}
+
+/* ====== LOGO (MIDTSTILT) ====== */
+.navbar .navbar-item img {
+    max-height: none !important; /* overstyr Bulma */
+}
+
+.navbar-brand {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    justify-content: center !important;
+    align-items: center !important;
+    display: flex !important;
+    z-index: 5;
+}
+
+.navbar-item img.pairfect-logo {
+    height: 160px !important;
+    width: auto !important;
+    display: block !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
+
+/* ====== KNAPPER ====== */
+.navbar-end,
+.navbar-end .buttons {
+    position: relative;
+    z-index: 10;
+}
+
+.navbar-end {
+    margin-left: auto;
+    align-items: center;
+}
+
+.button.is-primary {
+    background-color: #1612d3 !important; /* vinrød */
+    border: none !important;
+    color: #fff !important;
+}
+
+.button.is-primary:hover {
+    background-color: #7e7cff !important;
+}
+
+.button.is-light {
+    background-color: #fff !important;
+    border: 1px solid #ddd !important;
+    color: #333 !important;
+}
+
+.button.is-light:hover {
+    background-color: #f0efeb !important;
+}
+
+/* ====== RESPONSIV LAYOUT ====== */
+@media (max-width: 1023px) {
+    .navbar {
+        min-height: unset;
+    }
+
+    .navbar-brand {
+        position: static;
+        transform: none;
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    .navbar-item img.pairfect-logo {
+        height: 120px !important;
+    }
+
+    .navbar-menu {
+        width: 100%;
+        background-color: #f8f7f2 !important;
+        text-align: center;
+        padding-bottom: 1rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar-item img.pairfect-logo {
+        height: 100px !important;
+    }
+}
+
+/* =======================
+   CHAT BUBBLE COLORS
+   ======================= */
+
+/* Brukerens bobler (is-success) */
+.notification.is-success {
+    background-color: #f8f7f2 !important; /* vinrød */
+    color: #000000 !important;
+    border-radius: 16px !important;
+    border: none !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Pairfect (AI) bobler (is-info) */
+.notification.is-info {
+    background-color: #1612d3 !important; /* hvit bakgrunn */
+    color: #ffffff !important;
+    border-radius: 16px !important;
+    border: 1px solid #ddd !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+/* Felles stil for tidspunktene */
+.notification h6.subtitle.is-6 {
+    font-size: 0.8rem !important;
+    opacity: 0.7;
+    margin-bottom: 4px;
+}
+
+/* Container for chatmeldinger */
+.messageHistory {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+/* Gjør meldingene litt smalere på store skjermer */
+.columns .column {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}

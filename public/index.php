@@ -1,4 +1,7 @@
 <!-- HTML structure copied from https://medium.com/winkhosting/create-a-chatbot-using-ai-chatgpt-and-php-41bb752f6403 -->
+<?php
+session_start();
+?>
 
 <!DOCTYPE html>
 <html>
@@ -9,15 +12,19 @@
     <title>Pairfect - Your Wine Pairing Assistant</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <script type="module" src="assets/js/chat.js"></script>
+    <link rel="stylesheet" href="assets/stylesheet.css">
 </head>
 
 <body>
+
+   
+
     <!-- Site Header -->
     <nav class="navbar is-light" role="navigation" aria-label="main navigation">
         <div class="container">
             <div class="navbar-brand">
                 <a class="navbar-item" href="./">
-                    <strong>Pairfect</strong>
+                    <img src="assets/Pair.png" alt="Pairfect logo" class="pairfect-logo">
                 </a>
                 <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="mainNav">
                     <span aria-hidden="true"></span>
@@ -30,8 +37,14 @@
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <div class="buttons">
-                            <a class="button is-light" href="./register.php">Register</a>
-                            <a class="button is-primary" href="./login.php">Log in</a>
+                            <?php if (!isset($_SESSION['user_id'])): ?>
+                                <a class="button is-light" href="./register.php">Register</a>
+                                <a class="button is-primary" href="./login.php">Logg inn</a>
+                            <?php else: ?>
+                                <form method="post" action="logout.php" style="display:inline;">
+                                    <button class="button is-danger" type="submit">Logg ut</button>
+                                </form>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
