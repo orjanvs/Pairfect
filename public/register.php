@@ -1,8 +1,10 @@
 <?php 
 // Temp register page
 require __DIR__ . "/../src/Controllers/UserController.php";
-
-$userController = new UserController(new UserRepository($pdo));
+require __DIR__ . '/../src/Database/db.inc.php';
+$userRepository = new UserRepository($pdo);
+$userController = new UserController($userRepository);
+$dtstart = new DateTimeImmutable();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['uname'] ?? '');
@@ -27,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	</head>
 <body>
 <pre>
-<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+<form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>">
 	Username: <input type="text" name="uname" placeholder=
 	"Username"><br>
 	E-mail: <input type="email" name="email" placeholder=

@@ -1,6 +1,7 @@
 <?php
 
-include_once __DIR__ . '/../Database/db.inc.php';
+// include_once __DIR__ . '/../Database/db.inc.php';
+include __DIR__ . '/../Repositories/IUserRepository.php';
 
 class UserRepository implements IUserRepository
 {
