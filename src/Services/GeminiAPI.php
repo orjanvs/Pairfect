@@ -1,99 +1,96 @@
 <?php
 
-use GeminiAPI\Client;
-use GeminiAPI\Resources\Parts\TextPart;
-
 class GeminiAPI
 {
-    private Client $client;
-    private const MODEL = "gemini-2.5-flash";
+    private $apiKey;
+    private $model;
+    private $instruction;
 
     public function __construct()
     {
-        if (!isset($_ENV['GEMINI_API_KEY']) || empty($_ENV['GEMINI_API_KEY'])) {
-            throw new RuntimeException("Gemini API key not set in environment variables.");
+        // Check for API key in environment variables, then load. 
+        if (!isset($_ENV['GEMINI_API_KEY'])) {
+            throw new Exception("GEMINI_API_KEY is not set in environment variables.");
         }
-        $this->client = new Client($_ENV['GEMINI_API_KEY']);
+        $this->apiKey = $_ENV['GEMINI_API_KEY'];
+        $this->model = "gemini-2.5-flash";
+        $this->instruction =
+            <<<'SYS'
+        You are a professional sommelier.
+        - Provide expert wine pairing suggestions based on the user's input about dishes, ingredients, or cuisines.
+        - Always respond in a friendly and informative manner.
+        - Keep answer concise and relevant to wine pairing, but allow simple greetings.
+        - If the input is unclear or lacks context, politely ask for more details about the dish, ingredient, or cuisine.
+        - Answer in a maximum of 100 words.
+        - Don't use any special formatting or characters, such as * etc. 
+        - Always respond in the same language as the user's input.
+        SYS;
     }
 
-    /** 
-     * Generate text using Gemini API
-     * @param string $prompt The prompt to send to the Gemini API
-     * @return string $resp The generated text response
-     * @throws Exception if the API call fails
-    */
-    private function generateText(string $prompt): string
+    public function geminiChat($userMessage)
     {
-        try {
-        $resp = $this->client->generativeModel(self::MODEL)
-            ->generateContent(new TextPart($prompt));
-        return trim($resp->text()); 
-        } catch (Exception $e) {
-            return "The text could not be generated. Please try again.";
+        // Pass system instruction to API along with user message
+        $contents = [];
+        if ($this->instruction) {
+            $contents[] = [
+                "role" => "user",
+                "parts" => [
+                    [
+                        "text" => $this->instruction
+                    ]
+                ]
+            ];
         }
+
+        $contents[] = [
+            "role" => "user",
+            "parts" => [
+                [
+                    "text" => $userMessage
+                ]
+            ]
+        ];
+
+        $payload = [
+            "contents" => $contents
+        ];
+
+        $data = $this->apiRequest($payload);
+        return $this->extractText($data);
     }
 
-    /**
-     * Extract keyword from user message
-     * @param string $message The user input message
-     * @return string $keyword The extracted keyword
-     */
-    public function extractKeyword(string $message): string
+    private function apiRequest(array $payload)
     {
-        $prompt =
-        <<<TXT
-        INSTRUCTION:
-        - When user is inputting a dish: 
-        If ingredient or cuisine -> return exactly one word that best represents the main ingredient or cuisine.
-        If specific dish name -> return the actual dish name as is.
-        It has to make sense as a food item for wine pairing when viewing the dish as a whole.
-        If not a food, cuisine, or ingredient -> return the string "none".
-        - Always translate the keyword to English.
-        
-        USER INPUT:
-        <<<USER $message 
-        USER
-        >>>
-        TXT;
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
-        $keyword = $this->generateText($prompt);
-        return $keyword;
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            // Setting url headers
+            CURLOPT_HTTPHEADER => [
+                "x-goog-api-key: {$this->apiKey}",
+                "Content-Type: application/json"
+            ],
+            CURLOPT_POST => true, // Defining request as POST.
+            CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE), // Attaches payload and encodes to JSON
+            CURLOPT_RETURNTRANSFER => true, // Return response as string
+        ]);
+        $response = curl_exec($ch);
+        $curl_error = curl_error($ch);
+        curl_close($ch);
+
+        if ($response === false) {
+            throw new Exception("cURL Error: " . $curl_error);
+        }
+        $data = json_decode($response, true);
+        if (!is_array($data)) {
+            throw new Exception("Invalid JSON response from Gemini API.");
+        }
+
+        return $data;
     }
 
-    /**
-     * Enhance wine pairing suggestion using Gemini API
-     * @param string $message The user input message
-     * @param string $pairingText The wine pairing text from Spoonacular API
-     * @return string $response The enhanced wine pairing suggestion
-     */
-    public function enhanceWithGemini(string $message, string $pairingText): string
+    private function extractText(array $data)
     {
-        $prompt = <<<TXT
-        INSTRUCTION: 
-        - Enhance the following FACTS by making it more engaging and informative from
-        the provided FACTS. 
-        - If no pairing information from the spoonacular api is available, 
-        give a more general wine pairing advice for the food item.
-        - Use a max of 100 words.
-        - Don't include special characters or formatting such as *. Use plain text only.
-        - Don't give specific wine brands or stores to buy from.
-        - Don't mention the source of the information.
-        - Respond in the same language as the USER INPUT.
-
-        FACTS:
-        <<<FACTS 
-        {$pairingText} 
-        FACTS
-        >>>
-
-         USER INPUT:
-        <<<USER {$message} 
-        USER
-        >>>
-        TXT;
-
-        $response = $this->generateText($prompt);
-
-        return $response;
+        return trim($data['candidates'][0]['content']['parts'][0]['text'] ?? '');
     }
 }

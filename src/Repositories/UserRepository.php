@@ -1,9 +1,8 @@
 <?php
 
 // include_once __DIR__ . '/../Database/db.inc.php';
-include __DIR__ . '/../Repositories/IUserRepository.php';
 
-class UserRepository implements IUserRepository
+class UserRepository
 {
     private PDO $pdo;
 
@@ -31,6 +30,16 @@ class UserRepository implements IUserRepository
         ]);
     }
 
+    public function getUserByUsername(string $username)
+    {
+        $sql = "SELECT * FROM users WHERE username = :username";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':username' => $username]);
+        $user = $stmt->fetch(PDO::FETCH_OBJ);
+        return $user; 
+    }
+
+
     /**
      * Update user details
      * @param int $userId The ID of the user to update
@@ -40,12 +49,12 @@ class UserRepository implements IUserRepository
      */
     public function updateUser(int $userId, string $username, string $email): bool
     {
-        $sql = "UPDATE users SET username = :username, email = :email WHERE id = :id";
+        $sql = "UPDATE users SET username = :username, email = :email WHERE userid = :userid";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':username' => $username,
             ':email' => $email,
-            ':id' => $userId
+            ':userid' => $userId
         ]);
     }
 
@@ -57,11 +66,11 @@ class UserRepository implements IUserRepository
      */
     public function updateUserPassword(int $userId, string $passwordHash): bool
     {
-        $sql = "UPDATE users SET password_hash = :password_hash WHERE id = :id";
+        $sql = "UPDATE users SET password_hash = :password_hash WHERE userid = :userid";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':password_hash' => $passwordHash,
-            ':id' => $userId
+            ':userid' => $userId
         ]);
     }
 
@@ -72,8 +81,8 @@ class UserRepository implements IUserRepository
      */
     public function deleteUser(int $userId): bool
     {
-        $sql = "DELETE FROM users WHERE id = :id";
+        $sql = "DELETE FROM users WHERE userid = :userid";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([':id' => $userId]);
+        return $stmt->execute([':userid' => $userId]);
     }
 }

@@ -18,6 +18,16 @@ class UserController
         return $this->userRepository->createUser($username, $email, $passwordHash);
     }
 
+    // Login user
+    public function loginUser(string $username, string $password)
+    {
+        $user = $this->userRepository->getUserByUsername($username);
+        if ($user && password_verify($password, $user->password_hash)) {
+            return $user;
+        }
+        return null;
+    }
+
     // Update user details
     public function updateUser(int $userId, string $username, string $email): bool
     {
