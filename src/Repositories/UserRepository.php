@@ -1,6 +1,7 @@
 <?php
+namespace App\Repositories;
+use PDO;
 
-// include_once __DIR__ . '/../Database/db.inc.php';
 
 class UserRepository
 {

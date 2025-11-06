@@ -1,22 +1,29 @@
 <?php
+session_start();
+require __DIR__ . '/../vendor/autoload.php';
+use App\Services\UserService;
+use App\Repositories\UserRepository;
+use App\Database\Database;
 
-require __DIR__ . '/../src/Database/db.inc.php';
-require __DIR__ . '/../src/Controllers/UserController.php';
+$db = new Database();
+$pdo = $db->getConnection();
+$userRepository = new UserRepository($pdo);
+$userService = new UserService($userRepository);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim(stripslashes($_POST['username'] ?? ''));
     $password = trim(stripslashes($_POST['password'] ?? ''));
 
-    $loggedIn = $userController->loginUser($username, $password);
+
+    $loggedIn = $userService->loginUser($username, $password);
     if ($loggedIn) {
         // Password is correct, start session
-        session_start();
         $_SESSION["user"]["userid"] = $loggedIn->userid;
         $_SESSION["user"]["username"] = $loggedIn->username;
         $_SESSION["user"]["is_logged_in"] = true;
 
         // Redirect to index page
-        header("Location: indexTest.php");
+        header("Location: index.php");
         exit;
     } else {
         // Invalid credentials

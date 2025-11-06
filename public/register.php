@@ -1,9 +1,14 @@
 <?php
-// Temp register page
-require __DIR__ . "/../src/Controllers/UserController.php";
-require __DIR__ . '/../src/Database/db.inc.php';
+
+require __DIR__ . '/../vendor/autoload.php';
+use App\Repositories\UserRepository;
+use App\Services\UserService;
+use App\Database\Database;
+
+$db = new Database();
+$pdo = $db->getConnection();
 $userRepository = new UserRepository($pdo);
-$userController = new UserController($userRepository);
+$userService = new UserService($userRepository);
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -13,15 +18,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = trim($_POST['password'] ?? '');
 
     try {
-        $registered = $userController->registerUser($username, $email, $password);
+        $registered = $userService->registerUser($username, $email, $password);
         if ($registered) {
             echo "User registered successfully.";
-            $logIn = $userController->loginUser($username, $password);
+            $logIn = $userService->loginUser($username, $password);
             session_start();
             $_SESSION["user"]["userid"] = $logIn->userid;
             $_SESSION["user"]["username"] = $logIn->username;
             $_SESSION["user"]["is_logged_in"] = true;
-            header("Refresh: 3; url=indexTest.php");
+            header("Refresh: 3; url=index.php");
 
             exit;
         } else {

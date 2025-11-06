@@ -1,8 +1,8 @@
 <?php 
+namespace App\Services;
+use App\Repositories\UserRepository;
 
-include_once __DIR__ . '/../Repositories/UserRepository.php';
-
-class UserController
+class UserService
 {
     private UserRepository $userRepository;
 
