@@ -6,6 +6,14 @@ if (!$_SESSION["user"]["is_logged_in"]) {
   exit;
 }
 
+// Reset chat session on page load
+if (isset($_SESSION['messages'])) {
+    unset($_SESSION['messages']);
+}
+if (isset($_SESSION['current_convo_id'])) {
+    unset($_SESSION['current_convo_id']);
+}
+
 require __DIR__ . '/../vendor/autoload.php';
 use App\Services\GeminiAPI;
 use Dotenv\Dotenv;
@@ -48,21 +56,10 @@ $username = $_SESSION["user"]["username"] ?? '';
   <link rel="stylesheet" href="assets/css/chatbot.css">
 </head>
 <body>
-  <header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-    <div>
-      <h1 style="margin:0;font-size:1.25rem;">Pairfect - Your AI Wine Pairing Assistant</h1>
-    </div>
-    <div>
-      <?php if ($username): ?>
-        <a href="profile.php" style="margin-right:.5rem;padding:.5rem .75rem;border-radius:6px;border:1px solid #ddd;
-        text-decoration:none;color:#111;"><?= htmlspecialchars($username, ENT_QUOTES, 'UTF-8') ?></a>
-        <form method="post" style="display:inline;">
-          <button type="submit" name="logout" value="1" style="padding:.5rem .75rem;border-radius:6px;border:0;
-          background:#e74c3c;color:#fff;">Log out</button>
-        </form>
-      <?php endif; ?>
-    </div>
-  </header>
+  <?php 
+  include __DIR__ . '/partials/header.php';
+  include __DIR__ . '/partials/sidepanel.php'; 
+  ?>
 
   <div id="chat" aria-live="polite" aria-busy="false">
     <?php foreach ($_SESSION['messages'] as $m): ?>
@@ -78,5 +75,6 @@ $username = $_SESSION["user"]["username"] ?? '';
   </form>
 
   <script src="assets/js/chatbot.js"></script>
+  <script src="assets/js/sidepanel.js"></script>
 </body>
 </html>

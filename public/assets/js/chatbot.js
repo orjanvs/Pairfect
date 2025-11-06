@@ -60,10 +60,12 @@
     chat.setAttribute('aria-busy', 'true');
 
     try {
+      let convoId = null;
+
       const res = await fetch('requestmanager.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message })
+        body: JSON.stringify({ message, convoId  }),
       });
 
       // Session expired / not authorized
@@ -79,6 +81,9 @@
       }
 
       const data = await res.json();
+      if (typeof data.convoId === 'number') {
+        convoId = data.convoId;
+      }
       const reply = (data && data.responseMessage)
         ? data.responseMessage
         : 'Sorry, I could not generate a response.';
