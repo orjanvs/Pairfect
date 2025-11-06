@@ -1,105 +1,80 @@
-<!-- HTML structure copied from https://medium.com/winkhosting/create-a-chatbot-using-ai-chatgpt-and-php-41bb752f6403 -->
+<?php
 
-<!DOCTYPE html>
-<html>
+session_start();
+if (!$_SESSION["user"]["is_logged_in"]) {
+  header("Location: login.php");
+  exit;
+}
 
+// Reset chat session on page load
+if (isset($_SESSION['messages'])) {
+    unset($_SESSION['messages']);
+}
+if (isset($_SESSION['current_convo_id'])) {
+    unset($_SESSION['current_convo_id']);
+}
+
+require __DIR__ . '/../vendor/autoload.php';
+use App\Services\GeminiAPI;
+use Dotenv\Dotenv;
+
+
+$dotenv = Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
+
+// 1) Ensure message array exists in session
+if (!isset($_SESSION['messages'])) {
+    $_SESSION['messages'] = [[
+        'role' => 'model',
+        'content' => "Hello! I'm your personal wine pairing assistant. Tell me about a dish, ingredient, or cuisine, and I'll suggest the perfect wine to accompany it!"
+    ]];
+}
+
+// Handle logout request (form on this page)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
+  // Clear and destroy session then redirect to login
+  $_SESSION = [];
+  if (ini_get('session.use_cookies')) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+      $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+  }
+  session_destroy();
+  header('Location: login.php');
+  exit;
+}
+
+$username = $_SESSION["user"]["username"] ?? '';
+
+?>
+<!doctype html>
+<html lang="no">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Pairfect - Your Wine Pairing Assistant</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <script type="module" src="assets/js/chat.js"></script>
+  <meta charset="utf-8">
+  <title>Pairfect - Your AI Wine Pairing Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="assets/css/chatbot.css">
 </head>
-
 <body>
-    <!-- Site Header -->
-    <nav class="navbar is-light" role="navigation" aria-label="main navigation">
-        <div class="container">
-            <div class="navbar-brand">
-                <a class="navbar-item" href="./">
-                    <strong>Pairfect</strong>
-                </a>
-                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="mainNav">
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                </a>
-            </div>
+  <?php 
+  include __DIR__ . '/partials/header.php';
+  include __DIR__ . '/partials/sidepanel.php'; 
+  ?>
 
-            <div id="mainNav" class="navbar-menu">
-                <div class="navbar-end">
-                    <div class="navbar-item">
-                        <div class="buttons">
-                            <a class="button is-light" href="./register.php">Register</a>
-                            <a class="button is-primary" href="./login.php">Log in</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+  <div id="chat" aria-live="polite" aria-busy="false">
+    <?php foreach ($_SESSION['messages'] as $m): ?>
+      <div class="msg <?= $m['role'] === 'user' ? 'user' : 'model' ?>">
+        <?= htmlspecialchars($m['content'], ENT_QUOTES, 'UTF-8') ?>
+      </div>
+    <?php endforeach; ?>
+  </div>
 
-    <section class="section">
-        <div class="container">
-            <div class="columns  box">
-                <div class="column">
-                    <div class="columns">
-                        <div class="column has-text-centered">
-                            <h1 class="title">
-                                Pairfect - Your Wine Pairing Assistant
-                            </h1>
-                        </div>
-                    </div>
-                    <div class="columns">
-                        <div class="column">
-                            <div class="card-content" style="height:600px;overflow:auto;flex-grow: 1;flex-shrink: 1;">
-                                <div class="content messageHistory">
+  <form id="chat-form" autocomplete="off">
+    <input type="text" id="chat-input" name="message" placeholder="Example: 'Pasta with tomato sauce'" autofocus>
+    <button id="chat-send" type="submit">Send</button>
+  </form>
 
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="columns">
-                        <div class="column">
-                            <input class="input message" type="text" placeholder="Type your message" maxlength="200">
-                        </div>
-                        <div class="column is-narrow">
-                            <button class="button is-info sendMessage">
-                                Send
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="columns box is-hidden">
-                <div class="column result"></div>
-            </div>
-            <div class="columns box is-hidden">
-                <div class="column notification is-danger error has-text-centered">
-                </div>
-            </div>
-        </div>
-    </section>
-    <script>
-        // Bulma navbar burger toggle for mobile
-        document.addEventListener('DOMContentLoaded', function () {
-            var burgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-            burgers.forEach(function (burger) {
-                burger.addEventListener('click', function () {
-                    var target = burger.dataset.target;
-                    var $target = document.getElementById(target);
-                    burger.classList.toggle('is-active');
-                    if ($target) {
-                        $target.classList.toggle('is-active');
-                    }
-                });
-            });
-        });
-    </script>
+  <script src="assets/js/chatbot.js"></script>
+  <script src="assets/js/sidepanel.js"></script>
 </body>
-
 </html>

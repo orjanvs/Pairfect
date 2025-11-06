@@ -1,8 +1,8 @@
 <?php 
+namespace App\Services;
+use App\Repositories\UserRepository;
 
-include_once __DIR__ . '/../Repositories/UserRepository.php';
-
-class UserController
+class UserService
 {
     private UserRepository $userRepository;
 
@@ -16,6 +16,16 @@ class UserController
     {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT); // Hash password
         return $this->userRepository->createUser($username, $email, $passwordHash);
+    }
+
+    // Login user
+    public function loginUser(string $username, string $password)
+    {
+        $user = $this->userRepository->getUserByUsername($username);
+        if ($user && password_verify($password, $user->password_hash)) {
+            return $user;
+        }
+        return null;
     }
 
     // Update user details
