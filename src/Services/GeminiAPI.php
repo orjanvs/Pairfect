@@ -3,7 +3,6 @@
 class GeminiAPI
 {
     private $apiKey;
-    private $model;
     private $instruction;
 
     public function __construct()
@@ -13,7 +12,6 @@ class GeminiAPI
             throw new Exception("GEMINI_API_KEY is not set in environment variables.");
         }
         $this->apiKey = $_ENV['GEMINI_API_KEY'];
-        $this->model = "gemini-2.5-flash";
         $this->instruction =
             <<<'SYS'
         You are a professional sommelier.
