@@ -6,10 +6,7 @@ if (!$_SESSION["user"]["is_logged_in"]) {
   exit;
 }
 
-// Reset chat session on page load
-if (isset($_SESSION['messages'])) {
-    unset($_SESSION['messages']);
-}
+// Clear current conversation ID on page load
 if (isset($_SESSION['current_convo_id'])) {
     unset($_SESSION['current_convo_id']);
 }
@@ -62,15 +59,16 @@ $username = $_SESSION["user"]["username"] ?? '';
   ?>
 
   <div id="chat" aria-live="polite" aria-busy="false">
-    <?php foreach ($_SESSION['messages'] as $m): ?>
-      <div class="msg <?= $m['role'] === 'user' ? 'user' : 'model' ?>">
-        <?= htmlspecialchars($m['content'], ENT_QUOTES, 'UTF-8') ?>
+      <div class="msg model">
+        Hello! I'm your personal wine pairing assistant. 
+        Tell me about a dish, ingredient, or cuisine, and I'll suggest the perfect wine to accompany it!
       </div>
-    <?php endforeach; ?>
+
   </div>
 
   <form id="chat-form" autocomplete="off">
-    <input type="text" id="chat-input" name="message" placeholder="Example: 'Pasta with tomato sauce'" autofocus>
+    <input type="text" id="chat-input" name="message" 
+    placeholder="Example: 'Pasta with tomato sauce'" autofocus>
     <button id="chat-send" type="submit">Send</button>
   </form>
 
