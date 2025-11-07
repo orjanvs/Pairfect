@@ -31,29 +31,20 @@ class GeminiAPI
     public function geminiChat($userMessage)
     {
         // Pass system instruction to API along with user message
-        $contents = [];
-        if ($this->instruction) {
-            $contents[] = [
-                "role" => "user",
-                "parts" => [
-                    [
-                        "text" => $this->instruction
-                    ]
-                ]
-            ];
-        }
-
-        $contents[] = [
-            "role" => "user",
-            "parts" => [
-                [
-                    "text" => $userMessage
-                ]
-            ]
-        ];
-
         $payload = [
-            "contents" => $contents
+            "system_instruction" => [
+                "parts" => [
+                    ["text" => $this->instruction],
+                ],
+            ],
+            "contents" => [
+                [
+                    "role" => "user",
+                    "parts" => [
+                        ["text" => $userMessage],
+                    ],
+                ],
+            ],
         ];
 
         $data = $this->apiRequest($payload);
