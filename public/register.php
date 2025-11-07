@@ -4,12 +4,15 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\Repositories\UserRepository;
 use App\Services\UserService;
 use App\Database\Database;
+use App\Support\Validator;
 
 $db = new Database();
 $pdo = $db->getConnection();
 $userRepository = new UserRepository($pdo);
 $userService = new UserService($userRepository);
 
+$errors = [];
+$success = false;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -17,6 +20,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email    = trim($_POST['email'] ?? '');
     $password = trim($_POST['password'] ?? '');
 
+    // Validate inputs
+    $errors = array_merge(
+        Validator::validateUsername($username),
+        Validator::validateEmail($email),
+        Validator::validatePassword($password)
+    );
+
+    // Check if email already exists
+    if (!$errors && $userService->emailExists($email)) {
+        $errors[] = "E-mail already registered.";
+    }
+    // Check if username already exists
+    if (!$errors && $userService->usernameExists($username)) {
+        $errors[] = "Username already taken.";
+    }
+
+    // If no validation errors, proceed to register user
+    if (!$errors) {
     try {
         $registered = $userService->registerUser($username, $email, $password);
         if ($registered) {
@@ -33,44 +54,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Failed to register user.";
         }
     } catch (Exception $e) {
-        echo "Error registering user: " . $e->getMessage();
+        echo "Error registering user: " . $e->getMessage(); // Remove in prod
     }
 }
+}
+
 ?>
+
 <html lang="no">
 
 <head>
     <meta charset="utf-8">
-    <title>Innlogging</title>
-    <style>
-        body {
-            font-family: system-ui, sans-serif;
-            padding: 40px;
-            max-width: 400px;
-            margin: auto;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        input {
-            padding: 8px;
-            font-size: 1em;
-        }
-
-        button {
-            padding: 8px;
-            font-size: 1em;
-            cursor: pointer;
-        }
-    </style>
+    <title>Register</title>
+    <link rel="stylesheet" href="assets/css/register.css">
 </head>
 
 <body>
     <h2>Register User</h2>
+
+      <?php if (!empty($errors)): ?>
+    <ul>
+      <?php foreach ($errors as $e): ?>
+        <li><?= htmlspecialchars($e, ENT_QUOTES, 'UTF-8') ?></li>
+      <?php endforeach; ?>
+    </ul>
+  <?php endif; ?>
 
     <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>">
         <label for="username">Username:</label>

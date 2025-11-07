@@ -86,4 +86,20 @@ class UserRepository
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([':userid' => $userId]);
     }
+
+    public function emailExists(string $email): bool
+    {
+        $sql = "SELECT COUNT(*) FROM users WHERE email = :email";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':email' => $email]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function usernameExists(string $username): bool
+    {
+        $sql = "SELECT COUNT(*) FROM users WHERE username = :username";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':username' => $username]);
+        return $stmt->fetchColumn() > 0;
+    }
 }

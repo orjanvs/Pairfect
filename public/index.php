@@ -68,7 +68,7 @@ $username = $_SESSION["user"]["username"] ?? '';
 
   <form id="chat-form" autocomplete="off">
     <input type="text" id="chat-input" name="message" 
-    placeholder="Example: 'Pasta with tomato sauce'" autofocus>
+    placeholder="Example: 'Pasta with tomato sauce'" autofocus maxlength="200">
     <button id="chat-send" type="submit">Send</button>
   </form>
 
