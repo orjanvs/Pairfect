@@ -1,6 +1,6 @@
 <?php
-
 session_start();
+
 if (!$_SESSION["user"]["is_logged_in"]) {
   header("Location: login.php");
   exit;
@@ -12,22 +12,13 @@ if (isset($_SESSION['current_convo_id'])) {
 }
 
 require __DIR__ . '/../vendor/autoload.php';
-use App\Services\GeminiAPI;
 use Dotenv\Dotenv;
-
 
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
-// 1) Ensure message array exists in session
-if (!isset($_SESSION['messages'])) {
-    $_SESSION['messages'] = [[
-        'role' => 'model',
-        'content' => "Hello! I'm your personal wine pairing assistant. Tell me about a dish, ingredient, or cuisine, and I'll suggest the perfect wine to accompany it!"
-    ]];
-}
 
-// Handle logout request (form on this page)
+// Handle logout request 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
   // Clear and destroy session then redirect to login
   $_SESSION = [];
