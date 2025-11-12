@@ -13,7 +13,6 @@ $userRepository = new UserRepository($pdo);
 $userService = new UserService($userRepository);
 
 $errors = [];
-$success = false;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
