@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 require __DIR__ . '/../vendor/autoload.php';
 use App\Repositories\UserRepository;
@@ -43,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($registered) {
             echo "User registered successfully.";
             $logIn = $userService->loginUser($username, $password);
-            session_start();
+            session_regenerate_id(true); // Prevent session fixation
             $_SESSION["user"]["userid"] = $logIn->userid;
             $_SESSION["user"]["username"] = $logIn->username;
             $_SESSION["user"]["is_logged_in"] = true;
