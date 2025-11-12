@@ -2,6 +2,7 @@
 session_start();
 
 require __DIR__ . '/../vendor/autoload.php';
+
 use App\Repositories\UserRepository;
 use App\Services\UserService;
 use App\Database\Database;
@@ -28,35 +29,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     );
 
     // Check if email already exists
-    if (!$errors && $userService->emailExists($email)) {
+    if (empty($errors) && $userService->emailExists($email)) {
         $errors[] = "E-mail already registered.";
     }
     // Check if username already exists
-    if (!$errors && $userService->usernameExists($username)) {
+    if (empty($errors) && $userService->usernameExists($username)) {
         $errors[] = "Username already taken.";
     }
 
     // If no validation errors, proceed to register user
-    if (!$errors) {
-    try {
-        $registered = $userService->registerUser($username, $email, $password);
-        if ($registered) {
-            echo "User registered successfully.";
-            $logIn = $userService->loginUser($username, $password);
-            session_regenerate_id(true); // Prevent session fixation
-            $_SESSION["user"]["userid"] = $logIn->userid;
-            $_SESSION["user"]["username"] = $logIn->username;
-            $_SESSION["user"]["is_logged_in"] = true;
-            header("Refresh: 3; url=index.php");
+    if (empty($errors)) {
+        try {
+            $registered = $userService->registerUser($username, $email, $password);
+            if ($registered) {
+                echo "User registered successfully.";
+                $logIn = $userService->loginUser($username, $password);
+                session_regenerate_id(true); // Prevent session fixation
+                $_SESSION["user"]["userid"] = $logIn->userid;
+                $_SESSION["user"]["username"] = $logIn->username;
+                $_SESSION["user"]["is_logged_in"] = true;
+                header("Refresh: 3; url=index.php");
 
-            exit;
-        } else {
-            echo "Failed to register user.";
+                exit;
+            } else {
+                echo "Failed to register user.";
+            }
+        } catch (Exception $e) {
+            echo "Error registering user: " . $e->getMessage(); // Remove in prod
         }
-    } catch (Exception $e) {
-        echo "Error registering user: " . $e->getMessage(); // Remove in prod
     }
-}
 }
 
 ?>
@@ -72,13 +73,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <h2>Register User</h2>
 
-      <?php if (!empty($errors)): ?>
-    <ul class="errors" role="alert" aria-live="assertive">
-      <?php foreach ($errors as $e): ?>
-        <li><?= htmlspecialchars($e, ENT_QUOTES, 'UTF-8') ?></li>
-      <?php endforeach; ?>
-    </ul>
-  <?php endif; ?>
+    <?php if (!empty($errors)): ?>
+        <ul class="errors" role="alert" aria-live="assertive">
+            <?php foreach ($errors as $e): ?>
+                <li><?= htmlspecialchars($e, ENT_QUOTES, 'UTF-8') ?></li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
 
     <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>">
         <label for="username">Username:</label>
