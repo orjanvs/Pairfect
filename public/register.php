@@ -73,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h2>Register User</h2>
 
       <?php if (!empty($errors)): ?>
-    <ul>
+    <ul class="errors" role="alert" aria-live="assertive">
       <?php foreach ($errors as $e): ?>
         <li><?= htmlspecialchars($e, ENT_QUOTES, 'UTF-8') ?></li>
       <?php endforeach; ?>
