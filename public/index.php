@@ -61,6 +61,12 @@ $username = $_SESSION["user"]["username"] ?? '';
   include __DIR__ . '/partials/sidepanel.php'; 
   ?>
 
+  <div class="app-logo-inline">
+    <a href="index.php">
+      <img src="assets/img/Pair.png" alt="Pairfect logo" width="220" height="auto">
+    </a>
+  </div>
+
   <div id="chat" aria-live="polite" aria-busy="false">
     <?php foreach ($_SESSION['messages'] as $m): ?>
       <div class="msg <?= $m['role'] === 'user' ? 'user' : 'model' ?>">
