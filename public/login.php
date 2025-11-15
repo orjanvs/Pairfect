@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 require __DIR__ . '/../vendor/autoload.php';
 use App\Services\UserService;
 use App\Repositories\UserRepository;
@@ -12,12 +13,13 @@ $userService = new UserService($userRepository);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim(stripslashes($_POST['username'] ?? ''));
-    $password = trim(stripslashes($_POST['password'] ?? ''));
+    $password = $_POST['password'] ?? '';
 
 
     $loggedIn = $userService->loginUser($username, $password);
     if ($loggedIn) {
-        // Password is correct, start session
+        // Login successful, set session variables
+        session_regenerate_id(true); // Prevent session fixation
         $_SESSION["user"]["userid"] = $loggedIn->userid;
         $_SESSION["user"]["username"] = $loggedIn->username;
         $_SESSION["user"]["is_logged_in"] = true;

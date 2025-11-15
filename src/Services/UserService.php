@@ -46,4 +46,16 @@ class UserService
     {
         return $this->userRepository->deleteUser($userId);
     }
+
+    // Check if email exists
+    public function emailExists(string $email): bool
+    {
+        return $this->userRepository->emailExists($email);
+    }
+
+    // Check if username exists
+    public function usernameExists(string $username): bool
+    {
+        return $this->userRepository->usernameExists($username);
+    }
 }

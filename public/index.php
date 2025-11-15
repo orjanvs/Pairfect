@@ -1,36 +1,24 @@
 <?php
-
 session_start();
+
 if (!$_SESSION["user"]["is_logged_in"]) {
   header("Location: login.php");
   exit;
 }
 
-// Reset chat session on page load
-if (isset($_SESSION['messages'])) {
-    unset($_SESSION['messages']);
-}
+// Clear current conversation ID on page load
 if (isset($_SESSION['current_convo_id'])) {
     unset($_SESSION['current_convo_id']);
 }
 
 require __DIR__ . '/../vendor/autoload.php';
-use App\Services\GeminiAPI;
 use Dotenv\Dotenv;
-
 
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
-// 1) Ensure message array exists in session
-if (!isset($_SESSION['messages'])) {
-    $_SESSION['messages'] = [[
-        'role' => 'model',
-        'content' => "Hello! I'm your personal wine pairing assistant. Tell me about a dish, ingredient, or cuisine, and I'll suggest the perfect wine to accompany it!"
-    ]];
-}
 
-// Handle logout request (form on this page)
+// Handle logout request 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
   // Clear and destroy session then redirect to login
   $_SESSION = [];
@@ -62,15 +50,16 @@ $username = $_SESSION["user"]["username"] ?? '';
   ?>
 
   <div id="chat" aria-live="polite" aria-busy="false">
-    <?php foreach ($_SESSION['messages'] as $m): ?>
-      <div class="msg <?= $m['role'] === 'user' ? 'user' : 'model' ?>">
-        <?= htmlspecialchars($m['content'], ENT_QUOTES, 'UTF-8') ?>
+      <div class="msg model">
+        Hello! I'm your personal wine pairing assistant. 
+        Tell me about a dish, ingredient, or cuisine, and I'll suggest the perfect wine to accompany it!
       </div>
-    <?php endforeach; ?>
+
   </div>
 
   <form id="chat-form" autocomplete="off">
-    <input type="text" id="chat-input" name="message" placeholder="Example: 'Pasta with tomato sauce'" autofocus>
+    <input type="text" id="chat-input" name="message" 
+    placeholder="Example: 'Pasta with tomato sauce'" autofocus maxlength="200">
     <button id="chat-send" type="submit">Send</button>
   </form>
 
