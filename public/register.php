@@ -29,11 +29,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     );
 
     // Check if email already exists
-    if (empty($errors) && $userService->emailExists($email)) {
+    if ($userService->emailExists($email)) {
         $errors[] = "E-mail already registered.";
     }
     // Check if username already exists
-    if (empty($errors) && $userService->usernameExists($username)) {
+    if ($userService->usernameExists($username)) {
         $errors[] = "Username already taken.";
     }
 
