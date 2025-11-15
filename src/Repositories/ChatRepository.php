@@ -43,6 +43,17 @@ class ChatRepository
         ]);
     }
 
+    public function getConversationsByUserId(int $userId): array
+    {
+        $sql = "SELECT convo_id, title, started_at 
+                FROM conversations 
+                WHERE userid = :userid 
+                ORDER BY started_at DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':userid' => $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getMessagesByConversationIdForUser(int $convoId, int $userId): array
     {
         $sql = "SELECT m.msg_id, m.role, m.content, m.created_at  

@@ -49,6 +49,27 @@ class ChatService
         ];
     }
 
+    // get all conversations for a user to use in chat history sidepanel
+    public function getUserConversations(int $userId): array
+    {
+        return $this->chatRepository->getConversationsByUserId($userId);
+    }
+
+    // get specific conversation with messages
+    public function getConversationWithMessages(int $convoId, int $userId): ?array
+    {
+        // fetch conversation with ownership check
+        $conversation = $this->chatRepository->getConversationByIdForUser($convoId, $userId);
+        if (!$conversation) {
+            return null; // Conversation not found or does not belong to user
+        }
+        // fetch messages for the conversation
+        $messages = $this->chatRepository->getMessagesByConversationIdForUser($convoId, $userId);
+        return [
+            'conversation' => $conversation,
+            'messages' => $messages
+        ];
+    }
 
 
     

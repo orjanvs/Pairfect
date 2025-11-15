@@ -62,7 +62,7 @@
     try {
       let convoId = null;
 
-      const res = await fetch('requestmanager.php', {
+      const res = await fetch('endpoints/chat.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message, convoId  }),
