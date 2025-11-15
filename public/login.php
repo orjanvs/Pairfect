@@ -13,7 +13,7 @@ $userService = new UserService($userRepository);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim(stripslashes($_POST['username'] ?? ''));
-    $password = trim(stripslashes($_POST['password'] ?? ''));
+    $password = $_POST['password'] ?? '';
 
 
     $loggedIn = $userService->loginUser($username, $password);

@@ -33,7 +33,6 @@ class Validator
     }
 
     public static function validatePassword($password) {
-        $password = trim($password);
         $passwordErrors = [];
         if (empty($password)) {
             $passwordErrors[] = "Password is required.";
@@ -48,7 +47,7 @@ class Validator
         if (!preg_match('/[a-z]/', $password)) {
             $passwordErrors[] = "Password must contain at least one lowercase letter.";
         } 
-        if (preg_match_all('/\d/', $password) < 2) {
+        if (preg_match_all('/\d/', $password, $matches) < 2) {
             $passwordErrors[] = "Password must contain at least two numbers.";
         } 
         if (!preg_match('/[\W_]/', $password)) {
