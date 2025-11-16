@@ -1,0 +1,42 @@
+ /* Header clean-up */
+ .app-header {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     margin-bottom: 1rem;
+ }
+
+ .app-header h1 {
+     margin: 0;
+     font-size: 1.25rem;
+ }
+
+ .profile-link {
+     margin: 0 .5rem;
+     padding: .5rem .75rem;
+     border-radius: 6px;
+     border: 1px solid #ddd;
+     text-decoration: none;
+     color: #111;
+ }
+
+ .logout-btn {
+     padding: .5rem .75rem;
+     border-radius: 6px;
+     border: 0;
+     background: #e74c3c;
+     color: #fff;
+     cursor: pointer;
+ }
+
+ .history-btn,
+ .home-btn {
+     display: inline-block;
+     padding: .5rem .75rem;
+     border-radius: 6px;
+     border: 1px solid #000000;
+     background: #000000;
+     color: #fff;
+     text-decoration: none;
+     cursor: pointer;
+ }

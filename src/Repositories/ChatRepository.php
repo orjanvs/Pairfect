@@ -43,19 +43,45 @@ class ChatRepository
         ]);
     }
 
-    public function getMessagesByConversationId(int $convoId): array
-    {
-        $sql = "SELECT * FROM messages WHERE convo_id = :convo_id ORDER BY created_at ASC";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':convo_id' => $convoId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
     public function getConversationsByUserId(int $userId): array
     {
-        $sql = "SELECT * FROM conversations WHERE userid = :userid ORDER BY created_at DESC";
+        $sql = "SELECT convo_id, title, started_at 
+                FROM conversations 
+                WHERE userid = :userid 
+                ORDER BY started_at DESC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':userid' => $userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getMessagesByConversationIdForUser(int $convoId, int $userId): array
+    {
+        $sql = "SELECT m.msg_id, m.role, m.content, m.created_at  
+                FROM messages m
+                INNER JOIN conversations c ON m.convo_id = c.convo_id
+                WHERE m.convo_id = :convo_id 
+                AND c.userid = :userid  
+                ORDER BY created_at ASC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':convo_id' => $convoId, 
+            ':userid' => $userId
+        ]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getConversationByIdForUser(int $convoId, int $userId): ?array
+    {
+        $sql = "SELECT convo_id, title, started_at, userid
+                FROM conversations 
+                WHERE convo_id = :convo_id AND userid = :userid 
+                LIMIT 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':convo_id' => $convoId, 
+            ':userid' => $userId
+        ]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
     }
 }

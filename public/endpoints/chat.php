@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 use Dotenv\Dotenv;
 use App\Services\ChatService;
@@ -20,10 +20,10 @@ if (empty($_SESSION["user"]["is_logged_in"])) {
 
 
 // Load environment variables
-if (!file_exists(dirname(__DIR__) . '/.env')) {
+if (!file_exists(dirname(__DIR__, 2) . '/.env')) {
     throw new RuntimeException(".env file not found");
 }
-$dotenv = Dotenv::createImmutable(dirname(__DIR__));
+$dotenv = Dotenv::createImmutable(dirname(__DIR__, 2));
 $dotenv->load();
 
 // Only accept POST requests
