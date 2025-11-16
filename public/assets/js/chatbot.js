@@ -42,6 +42,8 @@
 
   if (!form) return;
 
+  let convoId = null;
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const message = (input.value || '').trim();
@@ -60,7 +62,9 @@
     chat.setAttribute('aria-busy', 'true');
 
     try {
-      let convoId = null;
+
+      const convoField = document.getElementById('convo-id');
+      let convoId = convoField.value ? Number(convoField.value) : null;
 
       const res = await fetch('endpoints/chat.php', {
         method: 'POST',

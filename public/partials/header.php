@@ -4,7 +4,8 @@
     <h1>Pairfect - Your AI Wine Pairing Assistant</h1>
   </div>
   <div class="right">
-    <button id="toggle-panel" class="sidepanel-btn" type="button">☰ Chat History</button>
+    <a class="home-btn" href="index.php">Home</a>
+    <a class="history-btn" href="convoHistory.php">Chat History</a>
 
     <?php if (!empty($username)): ?>
       <a href="profile.php" class="profile-link">
