@@ -53,7 +53,7 @@ class ChatService
         ];
     }
 
-    // get all conversations for a user to use in chat history sidepanel
+    // Get all conversations for a user to display in chat history page
     public function getUserConversations(int $userId): array
     {
         return $this->chatRepository->getConversationsByUserId($userId);

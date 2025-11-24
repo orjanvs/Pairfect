@@ -31,7 +31,14 @@ if ($convoId) {
   $pdo = $db->getConnection();
   $chatRepository = new ChatRepository($pdo);
   $chatService = new ChatService($chatRepository);
+
   $convo = $chatService->getConversationWithMessages($convoId, $userId);
+  if ($convo === null) {
+    http_response_code(404);
+    echo "Conversation not found.";
+    exit;
+  }
+
   $messages = $convo['messages'] ?? [];
 }
 

@@ -33,11 +33,7 @@ try {
     $userId = (int)$_SESSION["user"]["userid"];
 
     $conversations = $chatService->getUserConversations($userId);
-    if (!$conversations) {
-        http_response_code(404);
-        echo "Conversation not found.";
-        exit;
-    }
+
 } catch (Exception $e) {
     http_response_code(500);
     echo "Server error: " . $e->getMessage(); // Remove detailed error in production

@@ -42,8 +42,6 @@
 
   if (!form) return;
 
-  let convoId = null;
-
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const message = (input.value || '').trim();
@@ -74,7 +72,7 @@
 
       // Session expired / not authorized
       if (res.status === 401) {
-        replaceTypingWithReply(typingEl, 'Ikke autorisert. Omdirigerer til innlogging …');
+        replaceTypingWithReply(typingEl, 'Not authorized. Redirecting to login …');
         window.location = 'login.php';
         return;
       }
