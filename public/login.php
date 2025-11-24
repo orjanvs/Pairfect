@@ -1,22 +1,21 @@
 <?php
 session_start();
 
-require __DIR__ . '/../vendor/autoload.php';
-use App\Services\UserService;
-use App\Repositories\UserRepository;
-use App\Database\Database;
-
-$db = new Database();
-$pdo = $db->getConnection();
-$userRepository = new UserRepository($pdo);
-$userService = new UserService($userRepository);
+require __DIR__ . "/../bootstrap.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim(stripslashes($_POST['username'] ?? ''));
+    $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
+    // Attempt to log in the user
+    try {
+        $loggedIn = $userService->loginUser($username, $password);
+    } catch (Exception $e) {
+        error_log($e->getMessage());
+        echo "An error occurred during login. Please try again later.";
+        return;
+    }
 
-    $loggedIn = $userService->loginUser($username, $password);
     if ($loggedIn) {
         // Login successful, set session variables
         session_regenerate_id(true); // Prevent session fixation

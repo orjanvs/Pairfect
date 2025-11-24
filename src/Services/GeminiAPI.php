@@ -71,10 +71,14 @@ class GeminiAPI
         ]);
         $response = curl_exec($ch);
         $curl_error = curl_error($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
         if ($response === false) {
             throw new Exception("cURL Error: " . $curl_error);
+        }
+        if ($httpCode >= 400) {
+            throw new Exception("HTTP Error: " . $httpCode . " - Response: " . $response);
         }
         $data = json_decode($response, true);
         if (!is_array($data)) {

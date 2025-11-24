@@ -1,30 +1,17 @@
 <?php
-header('Content-Type: application/json');
-
-require __DIR__ . '/../../vendor/autoload.php';
-
-use Dotenv\Dotenv;
-use App\Services\ChatService;
-use App\Database\Database;
-use App\Repositories\ChatRepository;
-
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
+
+header('Content-Type: application/json');
+
+require __DIR__ . "/../bootstrap.php";
 
 // Check if user is logged in
 if (empty($_SESSION["user"]["is_logged_in"])) {
     http_response_code(401);
     exit;
 }
-
-
-// Load environment variables
-if (!file_exists(dirname(__DIR__, 2) . '/.env')) {
-    throw new RuntimeException(".env file not found");
-}
-$dotenv = Dotenv::createImmutable(dirname(__DIR__, 2));
-$dotenv->load();
 
 // Only accept POST requests
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
@@ -56,15 +43,10 @@ if (mb_strlen($message) > $maxLength) {
     exit;
 }
 
+$userId = $_SESSION["user"]["userid"];
+
 try {
     // Handle the chat message
-    $db = new Database();
-    $pdo = $db->getConnection();
-    $chatRepository = new ChatRepository($pdo);
-    $chatService = new ChatService($chatRepository);
-
-    $userId = $_SESSION["user"]["userid"];
-
     $response = $chatService->handleMessage($userId, $message, $convoId);
 
     // Remember current conversation ID in session
@@ -79,6 +61,8 @@ try {
     // Return response as JSON
     echo json_encode($response, JSON_UNESCAPED_UNICODE);
 } catch (Throwable $e) {
+    http_response_code(500); // Internal Server Error
+    error_log($e->getMessage());
     echo json_encode([
         'responseMessage' => 'Oh no! An error occurred while processing your request. Please try again.'
     ]);

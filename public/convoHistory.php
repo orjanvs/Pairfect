@@ -1,44 +1,24 @@
 <?php
-require __DIR__ . '/../vendor/autoload.php';
-
-use Dotenv\Dotenv;
-use App\Database\Database;
-use App\Repositories\ChatRepository;
-use App\Services\ChatService;
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
+
+require __DIR__ . "/../bootstrap.php";
+
 // Check if user is logged in
 if (empty($_SESSION["user"]["is_logged_in"])) {
     header("Location: login.php");
     exit;
 }
 
+// Fetch user info
 $username = $_SESSION["user"]["username"] ?? '';
+$userId = (int)$_SESSION["user"]["userid"];
 
-// Load environment variables
-if (!file_exists(dirname(__DIR__) . '/.env')) {
-    throw new RuntimeException(".env file not found");
-}
-$dotenv = Dotenv::createImmutable(dirname(__DIR__));
-$dotenv->load();
+// Fetch conversations for the user
+$conversations = $chatService->getUserConversations($userId);
 
-try {
-    $db = new Database();
-    $pdo = $db->getConnection();
-    $chatRepository = new ChatRepository($pdo);
-    $chatService = new ChatService($chatRepository);
-
-    $userId = (int)$_SESSION["user"]["userid"];
-
-    $conversations = $chatService->getUserConversations($userId);
-
-} catch (Exception $e) {
-    http_response_code(500);
-    echo "Server error: " . $e->getMessage(); // Remove detailed error in production
-    exit;
-}
 ?>
 
 <!DOCTYPE html>
