@@ -6,11 +6,8 @@ require __DIR__ . '/src/Support/Auth.php';
 use Dotenv\Dotenv;
 use App\Database\Database;
 
-
 use App\Repositories\UserRepository;
 use App\Services\UserService;
-
-
 
 // Configure exception logging 
 // Stores logs inside the web root, only done for school project purposes

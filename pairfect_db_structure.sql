@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 06. Nov, 2025 23:49 PM
+-- Generation Time: 25. Nov, 2025 02:55 AM
 -- Tjener-versjon: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -58,20 +58,10 @@ CREATE TABLE `users` (
   `userid` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `password_hash` varchar(255) NOT NULL
+  `password_hash` varchar(255) NOT NULL,
+  `login_attempts` int(11) NOT NULL DEFAULT 0,
+  `locked_until` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dataark for tabell `users`
---
-
-INSERT INTO `users` (`userid`, `username`, `email`, `password_hash`) VALUES
-(7, 'test', 'test@example.com', '$2y$10$gVArot8IyhUS1rpOw8NEWOV7M17lcubNL6bE9fl/OYhwXSEalx7M2'),
-(8, '', 'hei@hallo.no', '$2y$10$iBVvORulHZCP2lPidv6L8.cYzCghYELpnAtvwTo2d2QCND8Yi9dYu'),
-(9, '', 'ola.nordmann@example.com', '$2y$10$7QpwqhYxMymucjawTmAKYOHFhUAvnj1qb8EEo7FZIEaDJcRuLnxz.'),
-(10, 'halla', 'halla@balla.com', '$2y$10$EZIENy33vuNybeAyjBPwGOzIKjT74JcfmDduCZDPCA.8Mn9BfELSq'),
-(11, 'dette', 'er@en.test', '$2y$10$cNuax8DhPYk7EcAE40.LIe/rSkvpQ.5QnRhMoNp7ktSiUvnqs9Tpy'),
-(12, 'Random', 'random@example.com', '$2y$10$zV8qkqoze7bx85wNg3qToeVoSPUMD4G8GM3iXQa6qReiBX72eUKOu');
 
 --
 -- Indexes for dumped tables
@@ -95,7 +85,9 @@ ALTER TABLE `messages`
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`userid`);
+  ADD PRIMARY KEY (`userid`),
+  ADD UNIQUE KEY `uq_users_username` (`username`),
+  ADD UNIQUE KEY `uq_users_email` (`email`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -117,7 +109,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `userid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `userid` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Begrensninger for dumpede tabeller
