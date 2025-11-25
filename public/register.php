@@ -44,7 +44,7 @@ try {
                 header("Location: index.php");
                 exit;
             } else {
-                echo "Failed to register user.";
+                $errors[] = "Failed to register user.";
             }
         }
     }
@@ -57,7 +57,7 @@ try {
 
 ?>
 
-<html lang="no">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">

@@ -72,7 +72,7 @@ class GeminiAPI
         $response = curl_exec($ch);
         $curl_error = curl_error($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        // curl_close($ch); Commented out because deprecated in PHP 8.5. Leaving there for exam evaluation. 
+        // curl_close($ch); Commented out because deprecated in PHP 8.5. Left here for exam evaluation. 
 
         if ($response === false) {
             throw new Exception("cURL Error: " . $curl_error);
@@ -83,7 +83,7 @@ class GeminiAPI
         }
 
         $data = json_decode($response, true);
-        
+
         if (!is_array($data)) {
             throw new Exception("Invalid JSON response from Gemini API.");
         }

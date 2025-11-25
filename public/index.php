@@ -42,7 +42,7 @@ if ($convoId) {
 ?>
 
 <!doctype html>
-<html lang="no">
+<html lang="en">
 
 <head>
   <meta charset="utf-8">

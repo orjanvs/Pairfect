@@ -3,6 +3,7 @@
 require __DIR__ . "/../bootstrap.php";
 
 use function App\Support\authenticateUserHtml;
+
 authenticateUserHtml();
 
 // Fetch user info
@@ -16,7 +17,7 @@ try {
     error_log($e->getMessage());
     http_response_code(500);
     echo "An error occurred while fetching conversations. Please try again later.";
-    return;
+    exit;
 }
 ?>
 
@@ -62,9 +63,6 @@ try {
             </div>
         <?php endif; ?>
     </main>
-
-    <script src="assets/js/chatbot.js"></script>
 </body>
-
 
 </html>
