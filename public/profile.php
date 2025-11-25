@@ -179,11 +179,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="post">
         <input type="hidden" name="action" value="update_profile">
-        <label>New username:
-            <input type="text" name="username" value="<?php echo htmlspecialchars($user->username, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required>
+        <label for="username">New username:
+            <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($user->username, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required>
         </label><br>
-        <label>New email:
-            <input type="email" name="email" value="<?php echo htmlspecialchars($user->email, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required>
+        <label for="email">New email:
+            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user->email, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required>
         </label><br>
         <button type="submit">Save</button>
     </form>
@@ -202,14 +202,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="post">
         <input type="hidden" name="action" value="change_password">
-        <label>Current password:
-            <input type="password" name="current_password" required>
+        <label for="current_password">Current password:
+            <input type="password" id="current_password" name="current_password" required>
         </label><br>
-        <label>New password:
-            <input type="password" name="new_password" required>
+        <label for="new_password">New password:
+            <input type="password" id="new_password" name="new_password" required>
         </label><br>
-        <label>Confirm new password:
-            <input type="password" name="new_password_confirm" required>
+        <label for="new_password_confirm">Confirm new password:
+            <input type="password" id="new_password_confirm" name="new_password_confirm" required>
         </label><br>
         <button type="submit">Update password</button>
     </form>

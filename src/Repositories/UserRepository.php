@@ -125,7 +125,8 @@ class UserRepository
         $sql = "SELECT login_attempts FROM users WHERE username = :username";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':username' => $username]);
-        return (int)$stmt->fetchColumn();
+        $result = $stmt->fetchColumn();
+        return $result === false ? null : (int)$result;
     }
 
     public function lockAccount(string $username): void
@@ -134,11 +135,12 @@ class UserRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':username' => $username]);
     }
+
     public function isAccountLocked(string $username): bool
     {
         $sql = "SELECT is_locked FROM users WHERE username = :username";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':username' => $username]);
-        return (bool)$stmt->fetchColumn();
+        return $stmt->fetchColumn();
     }
 }
