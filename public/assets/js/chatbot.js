@@ -60,9 +60,11 @@
     chat.setAttribute('aria-busy', 'true');
 
     try {
-      let convoId = null;
 
-      const res = await fetch('requestmanager.php', {
+      const convoField = document.getElementById('convo-id');
+      let convoId = convoField.value ? Number(convoField.value) : null;
+
+      const res = await fetch('endpoints/chat.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message, convoId  }),
@@ -70,7 +72,7 @@
 
       // Session expired / not authorized
       if (res.status === 401) {
-        replaceTypingWithReply(typingEl, 'Ikke autorisert. Omdirigerer til innlogging …');
+        replaceTypingWithReply(typingEl, 'Not authorized. Redirecting to login …');
         window.location = 'login.php';
         return;
       }

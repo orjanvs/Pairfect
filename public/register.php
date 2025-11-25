@@ -1,68 +1,64 @@
 <?php
 session_start();
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . "/../bootstrap.php";
 
-use App\Repositories\UserRepository;
-use App\Services\UserService;
-use App\Database\Database;
 use App\Support\Validator;
-
-$db = new Database();
-$pdo = $db->getConnection();
-$userRepository = new UserRepository($pdo);
-$userService = new UserService($userRepository);
 
 $errors = [];
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+try {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $username = trim($_POST['username'] ?? '');
-    $email    = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
+        $username = trim($_POST['username'] ?? '');
+        $email    = trim($_POST['email'] ?? '');
+        $password = $_POST['password'] ?? '';
 
-    // Validate inputs
-    $errors = array_merge(
-        Validator::validateUsername($username),
-        Validator::validateEmail($email),
-        Validator::validatePassword($password)
-    );
+        // Validate inputs
+        $errors = array_merge(
+            Validator::validateUsername($username),
+            Validator::validateEmail($email),
+            Validator::validatePassword($password)
+        );
 
-    // Check if email already exists
-    if ($userService->emailExists($email)) {
-        $errors[] = "E-mail already registered.";
-    }
-    // Check if username already exists
-    if ($userService->usernameExists($username)) {
-        $errors[] = "Username already taken.";
-    }
+        // If no validation errors, proceed to register user
+        if (empty($errors)) {
 
-    // If no validation errors, proceed to register user
-    if (empty($errors)) {
-        try {
+            // Check if email already exists
+            if ($userService->emailExists($email)) {
+                $errors[] = "E-mail already registered.";
+            }
+            // Check if username already exists
+            if ($userService->usernameExists($username)) {
+                $errors[] = "Username already taken.";
+            }
+
             $registered = $userService->registerUser($username, $email, $password);
+
             if ($registered) {
-                echo "User registered successfully.";
                 $logIn = $userService->loginUser($username, $password);
                 session_regenerate_id(true); // Prevent session fixation
                 $_SESSION["user"]["userid"] = $logIn->userid;
                 $_SESSION["user"]["username"] = $logIn->username;
                 $_SESSION["user"]["is_logged_in"] = true;
-                header("Refresh: 3; url=index.php");
 
+                header("Location: index.php");
                 exit;
             } else {
-                echo "Failed to register user.";
+                $errors[] = "Failed to register user.";
             }
-        } catch (Exception $e) {
-            echo "Error registering user: " . $e->getMessage(); // Remove in prod
         }
     }
+} catch (Throwable $e) {
+    error_log($e->getMessage());
+    http_response_code(500);
+    echo "An error occurred during registration. Please try again later.";
+    exit; 
 }
 
 ?>
 
-<html lang="no">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">

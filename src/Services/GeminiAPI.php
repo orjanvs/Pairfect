@@ -28,8 +28,18 @@ class GeminiAPI
         SYS;
     }
 
-    public function geminiChat($userMessage)
+    public function geminiChat(array $messages): string
     {
+        $contents = [];
+        foreach ($messages as $m) {
+            $contents[] = [
+                "role" => $m['role'] === "model" ? "model" : "user",
+                "parts" => [
+                    ["text" => $m['content']],
+                ],
+            ];
+        }
+
         // Pass system instruction to API along with user message
         $payload = [
             "system_instruction" => [
@@ -37,14 +47,7 @@ class GeminiAPI
                     ["text" => $this->instruction],
                 ],
             ],
-            "contents" => [
-                [
-                    "role" => "user",
-                    "parts" => [
-                        ["text" => $userMessage],
-                    ],
-                ],
-            ],
+            "contents" => $contents,
         ];
 
         $data = $this->apiRequest($payload);
@@ -68,12 +71,19 @@ class GeminiAPI
         ]);
         $response = curl_exec($ch);
         $curl_error = curl_error($ch);
-        curl_close($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        // curl_close($ch); Commented out because deprecated in PHP 8.5. Left here for exam evaluation. 
 
         if ($response === false) {
             throw new Exception("cURL Error: " . $curl_error);
         }
+
+        if ($httpCode >= 400) {
+            throw new Exception("HTTP Error: " . $httpCode . " - Response: " . $response);
+        }
+
         $data = json_decode($response, true);
+
         if (!is_array($data)) {
             throw new Exception("Invalid JSON response from Gemini API.");
         }
