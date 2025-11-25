@@ -102,4 +102,43 @@ class UserRepository
         $stmt->execute([':username' => $username]);
         return $stmt->fetchColumn() > 0;
     }
+
+
+    // Account lockout methods
+    public function incrementLoginAttempts(string $username): void
+    {
+        $sql = "UPDATE users SET login_attempts = login_attempts + 1 
+        WHERE username = :username";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':username' => $username]);
+    }
+
+    public function resetLoginAttempts(string $username): void
+    {
+        $sql = "UPDATE users SET login_attempts = 0 WHERE username = :username";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':username' => $username]);
+    }
+
+    public function getLoginAttempts(string $username): int
+    {
+        $sql = "SELECT login_attempts FROM users WHERE username = :username";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':username' => $username]);
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function lockAccount(string $username): void
+    {
+        $sql = "UPDATE users SET is_locked = 1 WHERE username = :username";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':username' => $username]);
+    }
+    public function isAccountLocked(string $username): bool
+    {
+        $sql = "SELECT is_locked FROM users WHERE username = :username";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':username' => $username]);
+        return (bool)$stmt->fetchColumn();
+    }
 }

@@ -29,3 +29,11 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in C:\XAMPP\htdocs\Pairfect\public\index.php on line 8
+[25-Nov-2025 19:52:10 Europe/Berlin] PHP Warning:  Undefined variable $csrf in C:\XAMPP\htdocs\Pairfect\public\profile.php on line 145
+[25-Nov-2025 19:52:10 Europe/Berlin] PHP Warning:  Undefined variable $csrf in C:\XAMPP\htdocs\Pairfect\public\profile.php on line 161
+[25-Nov-2025 19:53:30 Europe/Berlin] PHP Warning:  Undefined variable $csrf in C:\XAMPP\htdocs\Pairfect\public\profile.php on line 145
+[25-Nov-2025 19:53:30 Europe/Berlin] PHP Warning:  Undefined variable $csrf in C:\XAMPP\htdocs\Pairfect\public\profile.php on line 161
+[25-Nov-2025 19:53:32 Europe/Berlin] PHP Warning:  Undefined variable $csrf in C:\XAMPP\htdocs\Pairfect\public\profile.php on line 145
+[25-Nov-2025 19:53:32 Europe/Berlin] PHP Warning:  Undefined variable $csrf in C:\XAMPP\htdocs\Pairfect\public\profile.php on line 161
+[25-Nov-2025 19:53:45 Europe/Berlin] PHP Warning:  Undefined variable $csrf in C:\XAMPP\htdocs\Pairfect\public\profile.php on line 145
+[25-Nov-2025 19:53:45 Europe/Berlin] PHP Warning:  Undefined variable $csrf in C:\XAMPP\htdocs\Pairfect\public\profile.php on line 161

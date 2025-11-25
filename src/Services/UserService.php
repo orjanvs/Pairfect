@@ -28,6 +28,12 @@ class UserService
         return null;
     }
 
+    // Get user
+    public function getUser(string $username)
+    {
+        return $this->userRepository->getUserByUsername($username);
+    }
+
     // Update user details
     public function updateUser(int $userId, string $username, string $email): bool
     {
