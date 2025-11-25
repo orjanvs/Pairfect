@@ -1,0 +1,8 @@
+[24-Nov-2025 23:37:05 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method App\Services\UserService::logiUser() in C:\XAMPP\htdocs\Pairfect\public\login.php:12
+Stack trace:
+#0 {main}
+  thrown in C:\XAMPP\htdocs\Pairfect\public\login.php on line 12
+[24-Nov-2025 23:39:55 Europe/Berlin] Call to undefined method App\Services\UserService::logiUser()
+[24-Nov-2025 23:44:28 Europe/Berlin] Call to undefined method App\Services\ChatService::getUserCoversations()
+[24-Nov-2025 23:44:32 Europe/Berlin] Call to undefined method App\Services\ChatService::getUserCoversations()
+[24-Nov-2025 23:45:06 Europe/Berlin] Call to undefined method App\Services\ChatService::getUserCoversations()

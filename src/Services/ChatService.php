@@ -5,12 +5,11 @@ use Throwable;
 
 class ChatService
 {
-    private GeminiAPI $gemini;
+    private ?GeminiAPI $gemini = null;
     private ChatRepository $chatRepository;
 
     public function __construct(ChatRepository $chatRepository)
     {
-        $this->gemini = new GeminiAPI();
         $this->chatRepository = $chatRepository;
     }
 
@@ -26,10 +25,17 @@ class ChatService
         if ($convoId === null) {
             $convoTitle = $this->chatRepository->generateConversationTitle($message);
             $convoId = $this->chatRepository->createConversation($userId, $convoTitle);
-        } 
+        } else {
+            $conversation = $this->chatRepository->getConversationByIdForUser($convoId, $userId);
+            if (!$conversation) {
+                return [
+                    "responseMessage" => "Conversation not found."
+                ];
+            }
+        }
 
         // Save user message
-        $this->chatRepository->addMessage($convoId, 'user', $message);
+        $this->chatRepository->addMessage($convoId, "user", $message);
 
         // Pass convo history to Gemini for context
         $history = $this->chatRepository->getMessagesByConversationIdForUser($convoId, $userId);
@@ -37,15 +43,19 @@ class ChatService
 
          // Get response from Gemini API
         try {
+            if ($this->gemini === null) {
+                $this->gemini = new GeminiAPI();
+            }
             $reply = $this->gemini->geminiChat($context);
             if (!$reply) {
                 $reply = "Sorry! Response could not be generated. Please try again.";
             }
         } catch (Throwable $e) {
+            error_log("Gemini API error: " . $e->getMessage());
             $reply = "An error occurred while processing your request. Please try again.";
         }
         // Save Gemini response
-        $this->chatRepository->addMessage($convoId, 'model', $reply);
+        $this->chatRepository->addMessage($convoId, "model", $reply);
         
         return [
             "responseMessage" => $reply,
@@ -59,19 +69,19 @@ class ChatService
         return $this->chatRepository->getConversationsByUserId($userId);
     }
 
-    // get specific conversation with messages
+    // Get specific conversation with messages
     public function getConversationWithMessages(int $convoId, int $userId): ?array
     {
-        // fetch conversation with ownership check
+        // Fetch conversation with ownership check
         $conversation = $this->chatRepository->getConversationByIdForUser($convoId, $userId);
         if (!$conversation) {
             return null; // Conversation not found or does not belong to user
         }
-        // fetch messages for the conversation
+        // Fetch messages for the conversation
         $messages = $this->chatRepository->getMessagesByConversationIdForUser($convoId, $userId);
         return [
-            'conversation' => $conversation,
-            'messages' => $messages
+            "conversation" => $conversation,
+            "messages" => $messages
         ];
     }
 

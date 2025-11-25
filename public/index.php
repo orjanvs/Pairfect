@@ -1,23 +1,24 @@
 <?php
-session_start();
 
 require __DIR__ . "/../bootstrap.php";
 
-if (!$_SESSION["user"]["is_logged_in"]) {
-  header("Location: login.php");
-  exit;
-}
+use function App\Support\authenticateUserHtml;
+authenticateUserHtml();
 
+
+// Fetch user info
 $userId = (int)$_SESSION["user"]["userid"];
-$convoId = isset($_GET['convoId']) ? (int)$_GET['convoId'] : null;
+$username = $_SESSION["user"]["username"] ?? '';
+$convoId = isset($_GET["convoId"]) ? (int)$_GET["convoId"] : null;
 
-// Clear current conversation ID when loading index.php without convoId
-if ($convoId === null && isset($_SESSION['current_convo_id'])) {
-  unset($_SESSION['current_convo_id']);
+// Clear current conversation ID from session if no convoId is provided
+if ($convoId === null && isset($_SESSION["current_convo_id"])) {
+  unset($_SESSION["current_convo_id"]);
 }
 
-$messages = [];
+$messages = []; 
 
+// If a conversation ID is provided, fetch its messages
 if ($convoId) {
   try {
     $convo = $chatService->getConversationWithMessages($convoId, $userId);
@@ -33,35 +34,13 @@ if ($convoId) {
     exit;
   }
 
-  $messages = $convo['messages'] ?? [];
+  // Extract messages
+  $messages = $convo["messages"] ?? [];
+  $_SESSION["current_convo_id"] = $convoId; // Remember current conversation ID in session
 }
-
-
-
-// Handle logout request 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
-  // Clear and destroy session then redirect to login
-  $_SESSION = [];
-  if (ini_get('session.use_cookies')) {
-    $params = session_get_cookie_params();
-    setcookie(
-      session_name(),
-      '',
-      time() - 42000,
-      $params['path'],
-      $params['domain'],
-      $params['secure'],
-      $params['httponly']
-    );
-  }
-  session_destroy();
-  header('Location: login.php');
-  exit;
-}
-
-$username = $_SESSION["user"]["username"] ?? '';
 
 ?>
+
 <!doctype html>
 <html lang="no">
 
@@ -74,9 +53,7 @@ $username = $_SESSION["user"]["username"] ?? '';
 </head>
 
 <body>
-  <?php
-  include __DIR__ . '/partials/header.php';
-  ?>
+  <?php include __DIR__ . '/partials/header.php'; ?>
 
   <div id="chat" aria-live="polite" aria-busy="false">
     <?php if ($messages): ?>

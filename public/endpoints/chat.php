@@ -1,17 +1,11 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
+
+require __DIR__ . "/../../bootstrap.php";
+
+use function App\Support\authenticateUserApi;
+authenticateUserApi(); 
 
 header('Content-Type: application/json');
-
-require __DIR__ . "/../bootstrap.php";
-
-// Check if user is logged in
-if (empty($_SESSION["user"]["is_logged_in"])) {
-    http_response_code(401);
-    exit;
-}
 
 // Only accept POST requests
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {

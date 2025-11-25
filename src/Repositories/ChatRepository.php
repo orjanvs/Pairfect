@@ -15,8 +15,8 @@ class ChatRepository
     {
         $maxLength = 60; 
         $title = trim($initialMessage);
-        if ($title === '') return 'New conversation';
-        $title = mb_strimwidth($title, 0, $maxLength, '…');
+        if ($title === "") return "New conversation";
+        $title = mb_strimwidth($title, 0, $maxLength, "...");
         return $title;
     }
 
@@ -25,8 +25,8 @@ class ChatRepository
         $sql = "INSERT INTO conversations (userid, title) VALUES (:userid, :title)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':userid' => $userId,
-            ':title' => $title
+            ":userid" => $userId,
+            ":title" => $title
         ]);
         return (int)$this->pdo->lastInsertId(); // Return the new conversation ID 
     }
@@ -37,9 +37,9 @@ class ChatRepository
                 VALUES (:convo_id, :role, :content)";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
-            ':convo_id' => $convoId,
-            ':role' => $role,
-            ':content' => $content
+            ":convo_id" => $convoId,
+            ":role" => $role,
+            ":content" => $content
         ]);
     }
 
@@ -50,7 +50,7 @@ class ChatRepository
                 WHERE userid = :userid 
                 ORDER BY started_at DESC";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':userid' => $userId]);
+        $stmt->execute([":userid" => $userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -64,8 +64,8 @@ class ChatRepository
                 ORDER BY created_at ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':convo_id' => $convoId, 
-            ':userid' => $userId
+            ":convo_id" => $convoId, 
+            ":userid" => $userId
         ]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -78,8 +78,8 @@ class ChatRepository
                 LIMIT 1";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':convo_id' => $convoId, 
-            ':userid' => $userId
+            ":convo_id" => $convoId, 
+            ":userid" => $userId
         ]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row ?: null;

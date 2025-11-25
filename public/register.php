@@ -33,24 +33,26 @@ try {
         // If no validation errors, proceed to register user
         if (empty($errors)) {
             $registered = $userService->registerUser($username, $email, $password);
+
             if ($registered) {
-                echo "User registered successfully.";
                 $logIn = $userService->loginUser($username, $password);
                 session_regenerate_id(true); // Prevent session fixation
                 $_SESSION["user"]["userid"] = $logIn->userid;
                 $_SESSION["user"]["username"] = $logIn->username;
                 $_SESSION["user"]["is_logged_in"] = true;
-                header("Refresh: 2; url=index.php");
+
+                header("Location: index.php");
                 exit;
             } else {
                 echo "Failed to register user.";
             }
         }
     }
-} catch (Exception $e) {
+} catch (Throwable $e) {
     error_log($e->getMessage());
+    http_response_code(500);
     echo "An error occurred during registration. Please try again later.";
-    return; 
+    exit; 
 }
 
 ?>

@@ -10,10 +10,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Attempt to log in the user
     try {
         $loggedIn = $userService->loginUser($username, $password);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         error_log($e->getMessage());
+        http_response_code(500);
         echo "An error occurred during login. Please try again later.";
-        return;
+        exit;
     }
 
     if ($loggedIn) {
