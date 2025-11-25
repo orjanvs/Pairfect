@@ -21,17 +21,18 @@ try {
             Validator::validatePassword($password)
         );
 
-        // Check if email already exists
-        if ($userService->emailExists($email)) {
-            $errors[] = "E-mail already registered.";
-        }
-        // Check if username already exists
-        if ($userService->usernameExists($username)) {
-            $errors[] = "Username already taken.";
-        }
-
         // If no validation errors, proceed to register user
         if (empty($errors)) {
+
+            // Check if email already exists
+            if ($userService->emailExists($email)) {
+                $errors[] = "E-mail already registered.";
+            }
+            // Check if username already exists
+            if ($userService->usernameExists($username)) {
+                $errors[] = "Username already taken.";
+            }
+
             $registered = $userService->registerUser($username, $email, $password);
 
             if ($registered) {

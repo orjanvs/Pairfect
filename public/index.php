@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . "/../bootstrap.php";
+require __DIR__ . "/../chat_init.php";
 
 use function App\Support\authenticateUserHtml;
 authenticateUserHtml();

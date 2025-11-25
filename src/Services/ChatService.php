@@ -5,12 +5,13 @@ use Throwable;
 
 class ChatService
 {
-    private ?GeminiAPI $gemini = null;
+    private GeminiAPI $gemini;
     private ChatRepository $chatRepository;
 
-    public function __construct(ChatRepository $chatRepository)
+    public function __construct(ChatRepository $chatRepository, GeminiAPI $gemini)  
     {
         $this->chatRepository = $chatRepository;
+        $this->gemini = $gemini; 
     }
 
     public function handleMessage(int $userId, string $message, ?int $convoId = null) : array
@@ -43,9 +44,6 @@ class ChatService
 
          // Get response from Gemini API
         try {
-            if ($this->gemini === null) {
-                $this->gemini = new GeminiAPI();
-            }
             $reply = $this->gemini->geminiChat($context);
             if (!$reply) {
                 $reply = "Sorry! Response could not be generated. Please try again.";

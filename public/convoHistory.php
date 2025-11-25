@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . "/../bootstrap.php";
+require __DIR__ . "/../chat_init.php";
 
 use function App\Support\authenticateUserHtml;
 
@@ -46,16 +46,12 @@ try {
                     <div class="convo-card">
                         <div class="convo-title">
                             <?= htmlspecialchars(
-                                $c['title'] ?: 'Untitled conversation',
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>
+                                $c['title'] ?: 'Untitled conversation', ENT_QUOTES, 'UTF-8') ?>
                         </div>
                         <div class="convo-meta">
-                            <?= htmlspecialchars(date(
+                            <?= date(
                                 'Y-m-d H:i',
-                                strtotime($c['started_at'])
-                            ), ENT_QUOTES, 'UTF-8') ?>
+                                strtotime($c['started_at'])) ?>
                         </div>
                         <a href="index.php?convoId=<?= (int) $c['convo_id'] ?>">Open in chat</a>
                     </div>
