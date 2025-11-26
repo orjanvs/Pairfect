@@ -40,13 +40,17 @@ try {
                 // If registration successful, log in the user
                 if ($registered) {
                     $logIn = $userService->loginUser($username, $password);
-                    session_regenerate_id(true); // Prevent session fixation
-                    $_SESSION["user"]["userid"] = $logIn->userid;
-                    $_SESSION["user"]["username"] = $logIn->username;
-                    $_SESSION["user"]["is_logged_in"] = true;
+                    if (is_object($logIn)) {
+                        session_regenerate_id(true); // Prevent session fixation
+                        $_SESSION["user"]["userid"] = $logIn->userid;
+                        $_SESSION["user"]["username"] = $logIn->username;
+                        $_SESSION["user"]["is_logged_in"] = true;
 
-                    header("Location: index.php");
-                    exit;
+                        header("Location: index.php");
+                        exit;
+                    } else {
+                        $errors[] = "Login failed after registration.";
+                    } 
                 } else {
                     $errors[] = "Failed to register user.";
                 }

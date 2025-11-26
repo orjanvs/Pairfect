@@ -128,8 +128,8 @@ class UserRepository
      * @param int $lockMinutes The duration of the lockout in minutes
      */
     public function recordFailedLoginAttempt(string $username, int $maxAttempts, int $lockMinutes): void {
-        $maxAttempts = (int)$maxAttempts;
-        $lockMinutes = (int)$lockMinutes;
+        $maxAttempts = $maxAttempts;
+        $lockMinutes = $lockMinutes;
         $lockUntil = date("Y-m-d H:i:s", time() + ($lockMinutes * 60));
 
         $sql = "UPDATE users 

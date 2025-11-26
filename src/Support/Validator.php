@@ -79,7 +79,7 @@ class Validator
     public static function validateMessage($message) {
         $messageErrors = [];
         $maxLength = 200;
-        if ($message === "" || trim($message) === "" || $message === null) {
+        if ($message === "" || trim($message) === "") {
             $messageErrors[] = "Message cannot be empty.";
             return $messageErrors;
         } 

@@ -34,8 +34,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             case "update_profile":
                 $updateErrors = [];
-                $newUsername = trim($_POST["username"]) ?? "";
-                $newEmail    = trim($_POST["email"]) ?? "";
+                $newUsername = trim($_POST["username"] ?? "");
+                $newEmail    = trim($_POST["email"] ?? "");
 
                 // Validate inputs
                 $updateErrors = array_merge(
