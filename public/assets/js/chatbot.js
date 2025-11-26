@@ -72,7 +72,7 @@
 
       // Session expired / not authorized
       if (res.status === 401) {
-        replaceTypingWithReply(typingEl, 'Not authorized. Redirecting to login …');
+        replaceTypingWithReply(typingEl, 'Not authorized. Redirecting to login ...');
         window.location = 'login.php';
         return;
       }

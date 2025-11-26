@@ -11,7 +11,7 @@
 
     <?php if (!empty($username)): ?>
       <a href="profile.php" class="profile-link">
-        <?= htmlspecialchars($username, ENT_QUOTES, 'UTF-8') ?>
+        <?= htmlspecialchars($username, ENT_QUOTES, "UTF-8") ?>
       </a>
       <form method="post" action="logout.php" style="display:inline;">
         <button type="submit" class="logout-btn">Log out</button>

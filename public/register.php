@@ -10,9 +10,9 @@ $errors = [];
 try {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-        $username = trim($_POST['username'] ?? '');
-        $email    = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
+        $username = trim($_POST["username"] ?? "");
+        $email    = trim($_POST["email"] ?? "");
+        $password = $_POST["password"] ?? "";
 
         // Validate inputs
         $errors = array_merge(
@@ -33,19 +33,27 @@ try {
                 $errors[] = "Username already taken.";
             }
 
-            $registered = $userService->registerUser($username, $email, $password);
+            if (empty($errors)) {
+                // Register the user
+                $registered = $userService->registerUser($username, $email, $password);
 
-            if ($registered) {
-                $logIn = $userService->loginUser($username, $password);
-                session_regenerate_id(true); // Prevent session fixation
-                $_SESSION["user"]["userid"] = $logIn->userid;
-                $_SESSION["user"]["username"] = $logIn->username;
-                $_SESSION["user"]["is_logged_in"] = true;
+                // If registration successful, log in the user
+                if ($registered) {
+                    $logIn = $userService->loginUser($username, $password);
+                    if (is_object($logIn)) {
+                        session_regenerate_id(true); // Prevent session fixation
+                        $_SESSION["user"]["userid"] = $logIn->userid;
+                        $_SESSION["user"]["username"] = $logIn->username;
+                        $_SESSION["user"]["is_logged_in"] = true;
 
-                header("Location: index.php");
-                exit;
-            } else {
-                $errors[] = "Failed to register user.";
+                        header("Location: index.php");
+                        exit;
+                    } else {
+                        $errors[] = "Login failed after registration.";
+                    } 
+                } else {
+                    $errors[] = "Failed to register user.";
+                }
             }
         }
     }
@@ -72,12 +80,12 @@ try {
     <?php if (!empty($errors)): ?>
         <ul class="errors" role="alert" aria-live="assertive">
             <?php foreach ($errors as $e): ?>
-                <li><?= htmlspecialchars($e, ENT_QUOTES, 'UTF-8') ?></li>
+                <li><?= htmlspecialchars($e, ENT_QUOTES, "UTF-8") ?></li>
             <?php endforeach; ?>
         </ul>
     <?php endif; ?>
 
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>">
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"], ENT_QUOTES, "UTF-8"); ?>">
         <label for="username">Username:</label>
         <input type="text" name="username" id="username" required placeholder="Username">
 

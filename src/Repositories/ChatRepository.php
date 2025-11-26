@@ -11,6 +11,11 @@ class ChatRepository
         $this->pdo = $pdo;
     }
 
+    /**
+     * Generate a conversation title based on the initial message
+     * @param string $initialMessage The initial message content
+     * @return string The generated conversation title
+     */
     public function generateConversationTitle(string $initialMessage): string
     {
         $maxLength = 60; 
@@ -20,6 +25,12 @@ class ChatRepository
         return $title;
     }
 
+    /**
+     * Create a new conversation
+     * @param int $userId The ID of the user starting the conversation
+     * @param string $title The title of the conversation
+     * @return int The ID of the newly created conversation
+     */
     public function createConversation(int $userId, string $title): int 
     {
         $sql = "INSERT INTO conversations (userid, title) VALUES (:userid, :title)";
@@ -31,6 +42,13 @@ class ChatRepository
         return (int)$this->pdo->lastInsertId(); // Return the new conversation ID 
     }
 
+    /**
+     * Add a message to a conversation
+     * @param int $convoId The ID of the conversation
+     * @param string $role The role of the message sender (e.g., 'model', 'user')
+     * @param string $content The content of the message
+     * @return bool True if the message was successfully added, false otherwise
+     */
     public function addMessage(int $convoId, string $role, string $content) 
     {
         $sql = "INSERT INTO messages (convo_id, role, content) 
@@ -43,6 +61,11 @@ class ChatRepository
         ]);
     }
 
+    /**
+     * Get conversations for a user
+     * @param int $userId The ID of the user
+     * @return array An array of conversations
+     */
     public function getConversationsByUserId(int $userId): array
     {
         $sql = "SELECT convo_id, title, started_at 
@@ -54,6 +77,12 @@ class ChatRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Get messages for a conversation and user
+     * @param int $convoId The ID of the conversation
+     * @param int $userId The ID of the user
+     * @return array An array of messages
+     */
     public function getMessagesByConversationIdForUser(int $convoId, int $userId): array
     {
         $sql = "SELECT m.msg_id, m.role, m.content, m.created_at  
@@ -70,6 +99,12 @@ class ChatRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Get a conversation by ID for a specific user
+     * @param int $convoId The ID of the conversation
+     * @param int $userId The ID of the user
+     * @return array|null The conversation data or null if not found
+     */
     public function getConversationByIdForUser(int $convoId, int $userId): ?array
     {
         $sql = "SELECT convo_id, title, started_at, userid

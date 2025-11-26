@@ -7,7 +7,7 @@ use function App\Support\authenticateUserHtml;
 authenticateUserHtml();
 
 // Fetch user info
-$username = $_SESSION["user"]["username"] ?? '';
+$username = $_SESSION["user"]["username"];
 $userId = (int)$_SESSION["user"]["userid"];
 
 // Fetch conversations for the user
@@ -33,7 +33,7 @@ try {
 </head>
 
 <body>
-    <?php include 'partials/header.php'; ?>
+    <?php include "partials/header.php"; ?>
 
     <main class="convo-history">
         <h2>Your Conversations</h2>
@@ -46,14 +46,14 @@ try {
                     <div class="convo-card">
                         <div class="convo-title">
                             <?= htmlspecialchars(
-                                $c['title'] ?: 'Untitled conversation', ENT_QUOTES, 'UTF-8') ?>
+                                $c["title"] ?: "Untitled conversation", ENT_QUOTES, "UTF-8") ?>
                         </div>
                         <div class="convo-meta">
                             <?= date(
-                                'Y-m-d H:i',
-                                strtotime($c['started_at'])) ?>
+                                "Y-m-d H:i",
+                                strtotime($c["started_at"])) ?>
                         </div>
-                        <a href="index.php?convoId=<?= (int) $c['convo_id'] ?>">Open in chat</a>
+                        <a href="index.php?convoId=<?= (int) $c["convo_id"] ?>">Open in chat</a>
                     </div>
                 <?php endforeach; ?>
             </div>

@@ -5,10 +5,16 @@ require __DIR__ . "/../chat_init.php";
 use function App\Support\authenticateUserHtml;
 authenticateUserHtml();
 
+// Ensure chat service is available
+if ($chatService === null) {
+    http_response_code(500);
+    echo "Chat service is currently unavailable. Please try again later.";
+    exit;
+}
 
 // Fetch user info
 $userId = (int)$_SESSION["user"]["userid"];
-$username = $_SESSION["user"]["username"] ?? '';
+$username = $_SESSION["user"]["username"];
 $convoId = isset($_GET["convoId"]) ? (int)$_GET["convoId"] : null;
 
 // Clear current conversation ID from session if no convoId is provided
@@ -53,13 +59,13 @@ if ($convoId) {
 </head>
 
 <body>
-  <?php include __DIR__ . '/partials/header.php'; ?>
+  <?php include __DIR__ . "/partials/header.php"; ?>
 
   <div id="chat" aria-live="polite" aria-busy="false">
     <?php if ($messages): ?>
       <?php foreach ($messages as $m): ?>
         <div class="msg <?= $m["role"] === "user" ? "user" : "model" ?>">
-          <?= htmlspecialchars($m["content"], ENT_QUOTES, 'UTF-8') ?>
+          <?= htmlspecialchars($m["content"], ENT_QUOTES, "UTF-8") ?>
         </div>
       <?php endforeach; ?>
     <?php else: ?>
@@ -71,7 +77,7 @@ if ($convoId) {
   </div>
 
   <form id="chat-form" autocomplete="off">
-    <input type="hidden" id="convo-id" name="convoId" value="<?= isset($_GET['convoId']) ? (int)$_GET['convoId'] : '' ?>">
+    <input type="hidden" id="convo-id" name="convoId" value="<?= isset($_GET["convoId"]) ? (int)$_GET["convoId"] : "" ?>">
     <input type="text" id="chat-input" name="message"
       placeholder="Example: 'Pasta with tomato sauce'" autofocus maxlength="200">
     <button id="chat-send" type="submit">Send</button>

@@ -2,10 +2,18 @@
 
 require __DIR__ . "/../../chat_init.php";
 
+use App\Support\Validator;
 use function App\Support\authenticateUserApi;
 authenticateUserApi(); 
 
-header('Content-Type: application/json');
+// Ensure chat service is available
+if ($chatService === null) {
+    http_response_code(503); // Service Unavailable
+    echo json_encode(["responseMessage" => "Chat service is currently unavailable. Please try again later."]);
+    exit;
+}
+
+header("Content-Type: application/json");
 
 // Only accept POST requests
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
@@ -15,25 +23,27 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 }
 
 // Fetches user input from frontend 
-$input = json_decode(file_get_contents('php://input'), true);
-$message = trim($input['message'] ?? ''); 
-$convoId = isset($input['convoId']) ? (int)$input['convoId'] : null;
+$input = json_decode(file_get_contents("php://input"), true);
 
-// Reuse conversation ID if it exists
-if ($convoId === null && !empty($_SESSION['current_convo_id'])) {
-    $convoId = (int)$_SESSION['current_convo_id'];
-}
-
-if ($message === '') {
-    echo json_encode(['responseMessage' => 'Please enter a valid message.']);
+if (!is_array($input)) {
+    http_response_code(400); // Bad Request
+    echo json_encode(["responseMessage" => "Invalid JSON payload."]);
     exit;
 }
 
+$message = trim($input["message"] ?? ""); 
+$convoId = isset($input["convoId"]) ? (int)$input["convoId"] : null;
 
-// Limit user input message length
-$maxLength = 200;
-if (mb_strlen($message) > $maxLength) {
-    echo json_encode(['responseMessage' => "Message exceeds maximum length of $maxLength characters."]);
+// Reuse conversation ID if it exists
+if ($convoId === null && !empty($_SESSION["current_convo_id"])) {
+    $convoId = (int)$_SESSION["current_convo_id"];
+}
+// Validate message
+$messageErrors = Validator::validateMessage($message);
+if (!empty($messageErrors)) {
+    echo json_encode([
+        "responseMessage" => $messageErrors[0]
+    ]);
     exit;
 }
 
@@ -44,12 +54,12 @@ try {
     $response = $chatService->handleMessage($userId, $message, $convoId);
 
     // Remember current conversation ID in session
-    if (!empty($response['convoId'])) {
-    $_SESSION['current_convo_id'] = (int) $response['convoId'];
+    if (!empty($response["convoId"])) {
+    $_SESSION["current_convo_id"] = (int) $response["convoId"];
     }
 
-    if (!isset($response['responseMessage'])) {
-        $response['responseMessage'] = "Sorry, something went wrong. Please try again.";
+    if (!isset($response["responseMessage"])) {
+        $response["responseMessage"] = "Sorry, something went wrong. Please try again.";
     }
 
     // Return response as JSON
@@ -58,6 +68,6 @@ try {
     http_response_code(500); // Internal Server Error
     error_log($e->getMessage());
     echo json_encode([
-        'responseMessage' => 'Oh no! An error occurred while processing your request. Please try again.'
+        "responseMessage" => "Oh no! An error occurred while processing your request. Please try again."
     ]);
 }

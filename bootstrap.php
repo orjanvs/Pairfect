@@ -1,7 +1,7 @@
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
-require __DIR__ . '/src/Support/Auth.php';
+require __DIR__ . "/vendor/autoload.php";
+require __DIR__ . "/src/Support/Auth.php";
 
 use Dotenv\Dotenv;
 use App\Database\Database;
@@ -19,14 +19,15 @@ if (!is_dir($logDir)) {
 
 $logFile = $logDir . "/app-" . date("Y-m-d") . ".log";
 
-ini_set('log_errors', '1');
-ini_set('error_log', $logFile);
+ini_set("log_errors", "1");
+ini_set("error_log", $logFile);
 
+// Load environment variables
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
+// Initialize services and repositories
 try {
-
     $db = new Database(); 
     $pdo = $db->getConnection();
 
@@ -36,5 +37,5 @@ try {
 } catch (Throwable $e) {
     // Handle or log the error appropriately
     error_log($e->getMessage()); 
-    exit('An error occurred while initializing the application.');
+    exit("An error occurred while initializing the application.");
 }
