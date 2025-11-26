@@ -11,10 +11,10 @@ class GeminiAPI
     public function __construct()
     {
         // Check for API key in environment variables, then load. 
-        if (!isset($_ENV['GEMINI_API_KEY'])) {
+        if (!isset($_ENV["GEMINI_API_KEY"])) {
             throw new Exception("GEMINI_API_KEY is not set in environment variables.");
         }
-        $this->apiKey = $_ENV['GEMINI_API_KEY'];
+        $this->apiKey = $_ENV["GEMINI_API_KEY"];
         $this->instruction =
             <<<'SYS'
         You are a professional sommelier.
@@ -28,14 +28,20 @@ class GeminiAPI
         SYS;
     }
 
+    /**
+     * Send chat messages to Gemini API and get a response
+     * @param array $messages An array of messages with 'role' and 'content'
+     * @return string The response from Gemini API
+     * @throws Exception If there is an error with the API request
+     */
     public function geminiChat(array $messages): string
     {
         $contents = [];
         foreach ($messages as $m) {
             $contents[] = [
-                "role" => $m['role'] === "model" ? "model" : "user",
+                "role" => $m["role"] === "model" ? "model" : "user",
                 "parts" => [
-                    ["text" => $m['content']],
+                    ["text" => $m["content"]],
                 ],
             ];
         }
@@ -54,6 +60,7 @@ class GeminiAPI
         return $this->extractText($data);
     }
 
+    // Make the API request
     private function apiRequest(array $payload)
     {
         $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
@@ -91,8 +98,9 @@ class GeminiAPI
         return $data;
     }
 
+    // Extract text from API response
     private function extractText(array $data)
     {
-        return trim($data['candidates'][0]['content']['parts'][0]['text'] ?? '');
+        return trim($data["candidates"][0]["content"]["parts"][0]["text"] ?? "");
     }
 }

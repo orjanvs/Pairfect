@@ -14,6 +14,13 @@ class ChatService
         $this->gemini = $gemini; 
     }
 
+    /**
+     * Handle incoming message from user
+     * @param int $userId The ID of the user sending the message
+     * @param string $message The content of the user's message
+     * @param int|null $convoId The ID of the conversation, null if new
+     * @return array An array containing the response message and conversation ID
+     */
     public function handleMessage(int $userId, string $message, ?int $convoId = null) : array
     {
         if ($message === "") {
@@ -61,13 +68,22 @@ class ChatService
         ];
     }
 
-    // Get all conversations for a user to display in chat history page
+    /**
+     * Get all conversations for a user
+     * @param int $userId The ID of the user
+     * @return array An array of conversations
+     */
     public function getUserConversations(int $userId): array
     {
         return $this->chatRepository->getConversationsByUserId($userId);
     }
 
-    // Get specific conversation with messages
+    /**
+     * Get a conversation with its messages for a user
+     * @param int $convoId The ID of the conversation
+     * @param int $userId The ID of the user
+     * @return array|null The conversation with messages or null if not found
+     */
     public function getConversationWithMessages(int $convoId, int $userId): ?array
     {
         // Fetch conversation with ownership check

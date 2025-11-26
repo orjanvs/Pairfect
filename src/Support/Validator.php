@@ -3,6 +3,11 @@ namespace App\Support;
 
 class Validator 
 {
+    /**
+     * Validate email format
+     * @param string $email The email to validate
+     * @return array An array of error messages, empty if valid
+     */
     public static function validateEmail($email) {
         $email = trim($email);
         $emailErrors = [];
@@ -16,6 +21,11 @@ class Validator
         return $emailErrors;
     }
 
+    /**
+     * Validate username format
+     * @param string $username The username to validate
+     * @return array An array of error messages, empty if valid
+     */
     public static function validateUsername($username) {
         $username = trim($username);
         $usernameErrors = [];
@@ -32,6 +42,11 @@ class Validator
         return $usernameErrors;
     }
 
+    /**
+     * Validate password strength
+     * @param string $password The password to validate
+     * @return array An array of error messages, empty if valid
+     */
     public static function validatePassword($password) {
         $passwordErrors = [];
         if (empty($password)) {
@@ -56,6 +71,11 @@ class Validator
         return $passwordErrors;
     }
 
+    /**
+     * Validate message content
+     * @param string $message The message to validate
+     * @return array An array of error messages, empty if valid
+     */
     public static function validateMessage($message) {
         $messageErrors = [];
         $maxLength = 200;

@@ -11,7 +11,13 @@ class UserService
         $this->userRepository = $userRepository;
     }
 
-    // Register a new user
+    /**
+     * Register a new user
+     * @param string $username The username of the new user
+     * @param string $email The email of the new user
+     * @param string $password The password of the new user
+     * @return bool True if the user was successfully registered, false otherwise
+     */
     public function registerUser(string $username, string $email, string $password): bool
     {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT); // Hash password
@@ -22,10 +28,22 @@ class UserService
     public function loginUser(string $username, string $password)
     {
         $user = $this->userRepository->getUserByUsername($username);
-        if ($user && password_verify($password, $user->password_hash)) {
-            return $user;
+        if (!$user) {
+            return null;
         }
-        return null;
+
+        // Check for lockout
+        if ($user->locked_until && strtotime($user->locked_until) > time()) {
+            return ["status" => "locked", "locked_until" => $user->locked_until];
+        }
+
+        if (!password_verify($password, $user->password_hash)) {
+            $this->userRepository->recordFailedLoginAttempt($user->username, 5, 30); // 5 attempts, 30 minutes lockout
+            return null;
+        }
+
+        $this->userRepository->clearLockout($user->username);
+        return $user;
     }
 
     // Get user

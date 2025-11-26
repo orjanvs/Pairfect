@@ -25,9 +25,9 @@ class UserRepository
                 VALUES (:username, :email, :password_hash)";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
-            ':username' => $username,
-            ':email' => $email,
-            ':password_hash' => $passwordHash
+            ":username" => $username,
+            ":email" => $email,
+            ":password_hash" => $passwordHash
         ]);
     }
 
@@ -35,7 +35,7 @@ class UserRepository
     {
         $sql = "SELECT * FROM users WHERE username = :username";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':username' => $username]);
+        $stmt->execute([":username" => $username]);
         $user = $stmt->fetch(PDO::FETCH_OBJ);
         return $user; 
     }
@@ -53,9 +53,9 @@ class UserRepository
         $sql = "UPDATE users SET username = :username, email = :email WHERE userid = :userid";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
-            ':username' => $username,
-            ':email' => $email,
-            ':userid' => $userId
+            ":username" => $username,
+            ":email" => $email,
+            ":userid" => $userId
         ]);
     }
 
@@ -70,8 +70,8 @@ class UserRepository
         $sql = "UPDATE users SET password_hash = :password_hash WHERE userid = :userid";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
-            ':password_hash' => $passwordHash,
-            ':userid' => $userId
+            ":password_hash" => $passwordHash,
+            ":userid" => $userId
         ]);
     }
 
@@ -84,63 +84,68 @@ class UserRepository
     {
         $sql = "DELETE FROM users WHERE userid = :userid";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([':userid' => $userId]);
+        return $stmt->execute([":userid" => $userId]);
     }
 
+    /**
+     * Check if an email exists
+     * @param string $email The email to check
+     * @return bool True if the email exists, false otherwise
+     */
     public function emailExists(string $email): bool
     {
         $sql = "SELECT COUNT(*) FROM users WHERE email = :email";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':email' => $email]);
+        $stmt->execute([":email" => $email]);
         return $stmt->fetchColumn() > 0;
     }
 
+    /**
+     * Check if a username exists
+     * @param string $username The username to check
+     * @return bool True if the username exists, false otherwise
+     */
     public function usernameExists(string $username): bool
     {
         $sql = "SELECT COUNT(*) FROM users WHERE username = :username";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':username' => $username]);
+        $stmt->execute([":username" => $username]);
         return $stmt->fetchColumn() > 0;
     }
 
 
     // Account lockout methods
-    public function incrementLoginAttempts(string $username): void
-    {
-        $sql = "UPDATE users SET login_attempts = login_attempts + 1 
+    
+    /**
+     * Record a failed login attempt and lock the account if max attempts are reached
+     * @param string $username The username to record the attempt for
+     * @param int $maxAttempts The maximum allowed failed attempts before lockout
+     * @param int $lockMinutes The duration of the lockout in minutes
+     */
+    public function recordFailedLoginAttempt(string $username, int $maxAttempts, int $lockMinutes): void {
+        $sql = "UPDATE users 
+        SET login_attempts = login_attempts + 1,
+            locked_until = CASE
+                WHEN login_attempts + 1 >= :maxAttempts THEN DATE_ADD(NOW(), INTERVAL :lockMinutes MINUTE)
+                ELSE locked_until
+            END
         WHERE username = :username";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':username' => $username]);
+        $stmt->execute([
+            ":username" => $username,
+            ":maxAttempts" => $maxAttempts,
+            ":lockMinutes" => $lockMinutes
+        ]);
     }
 
-    public function resetLoginAttempts(string $username): void
-    {
-        $sql = "UPDATE users SET login_attempts = 0 WHERE username = :username";
+    /**
+     * Clear lockout status for a user
+     * @param string $username The username to clear the lockout for
+     */
+    public function clearLockout(string $username): void {
+        $sql = "UPDATE users SET login_attempts = 0, locked_until = NULL 
+        WHERE username = :username";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':username' => $username]);
-    }
-
-    public function getLoginAttempts(string $username): int
-    {
-        $sql = "SELECT login_attempts FROM users WHERE username = :username";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':username' => $username]);
-        $result = $stmt->fetchColumn();
-        return $result === false ? null : (int)$result;
-    }
-
-    public function lockAccount(string $username): void
-    {
-        $sql = "UPDATE users SET is_locked = 1 WHERE username = :username";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':username' => $username]);
-    }
-
-    public function isAccountLocked(string $username): bool
-    {
-        $sql = "SELECT is_locked FROM users WHERE username = :username";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':username' => $username]);
-        return $stmt->fetchColumn();
+        $stmt->execute([":username" => $username]);
     }
 }

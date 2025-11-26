@@ -10,9 +10,9 @@ $errors = [];
 try {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-        $username = trim($_POST['username'] ?? '');
-        $email    = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
+        $username = trim($_POST["username"] ?? "");
+        $email    = trim($_POST["email"] ?? "");
+        $password = $_POST["password"] ?? "";
 
         // Validate inputs
         $errors = array_merge(
@@ -72,12 +72,12 @@ try {
     <?php if (!empty($errors)): ?>
         <ul class="errors" role="alert" aria-live="assertive">
             <?php foreach ($errors as $e): ?>
-                <li><?= htmlspecialchars($e, ENT_QUOTES, 'UTF-8') ?></li>
+                <li><?= htmlspecialchars($e, ENT_QUOTES, "UTF-8") ?></li>
             <?php endforeach; ?>
         </ul>
     <?php endif; ?>
 
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>">
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"], ENT_QUOTES, "UTF-8"); ?>">
         <label for="username">Username:</label>
         <input type="text" name="username" id="username" required placeholder="Username">
 
