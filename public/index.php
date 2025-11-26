@@ -5,6 +5,12 @@ require __DIR__ . "/../chat_init.php";
 use function App\Support\authenticateUserHtml;
 authenticateUserHtml();
 
+// Ensure chat service is available
+if ($chatService === null) {
+    http_response_code(500);
+    echo "Chat service is currently unavailable. Please try again later.";
+    exit;
+}
 
 // Fetch user info
 $userId = (int)$_SESSION["user"]["userid"];

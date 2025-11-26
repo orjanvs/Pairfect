@@ -34,6 +34,11 @@ function authenticateUserApi() {
     }
 }
 
+/**
+ * Logs out the user by destroying the session and redirects to the specified URL.
+ *
+ * @param string $redirectUrl The URL to redirect to after logout.
+ */
 function logoutAndRedirect(string $redirectUrl) {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();

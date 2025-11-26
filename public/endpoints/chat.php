@@ -6,6 +6,13 @@ use App\Support\Validator;
 use function App\Support\authenticateUserApi;
 authenticateUserApi(); 
 
+// Ensure chat service is available
+if ($chatService === null) {
+    http_response_code(503); // Service Unavailable
+    echo json_encode(["responseMessage" => "Chat service is currently unavailable. Please try again later."]);
+    exit;
+}
+
 header("Content-Type: application/json");
 
 // Only accept POST requests
@@ -17,6 +24,13 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
 // Fetches user input from frontend 
 $input = json_decode(file_get_contents("php://input"), true);
+
+if (!is_array($input)) {
+    http_response_code(400); // Bad Request
+    echo json_encode(["responseMessage" => "Invalid JSON payload."]);
+    exit;
+}
+
 $message = trim($input["message"] ?? ""); 
 $convoId = isset($input["convoId"]) ? (int)$input["convoId"] : null;
 

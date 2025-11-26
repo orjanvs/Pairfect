@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $remainingTime = $lockedUntil - time();
             }
             $lockoutMessage = "Your account is temporarily locked due to multiple failed login attempts. Please try again in " . ceil($remainingTime / 60) . " minutes.";
-        } elseif ($loginResult) {
+        } elseif (is_object($loginResult)) {
             // Login successful, set session variables
             session_regenerate_id(true); // Prevent session fixation
             $_SESSION["user"]["userid"] = $loginResult->userid;
@@ -63,10 +63,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h2>Log in</h2>
 
     <?php if ($lockoutMessage): ?>
-        <div class="alert alert-error"><?= htmlspecialchars($lockoutMessage, ENT_QUOTES, 'UTF-8') ?></div>
+        <div class="alert alert-error"><?= htmlspecialchars($lockoutMessage, ENT_QUOTES, "UTF-8") ?></div>
     <?php endif; ?>
     <?php if ($errorMessage): ?>
-        <div class="alert alert-error"><?= htmlspecialchars($errorMessage, ENT_QUOTES, 'UTF-8') ?></div>
+        <div class="alert alert-error"><?= htmlspecialchars($errorMessage, ENT_QUOTES, "UTF-8") ?></div>
     <?php endif; ?>
 
     <form method="post" action="">

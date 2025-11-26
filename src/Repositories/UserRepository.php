@@ -31,6 +31,11 @@ class UserRepository
         ]);
     }
 
+    /**
+     * Get user by username
+     * @param string $username The username to search for
+     * @return object|null The user object if found, null otherwise
+     */
     public function getUserByUsername(string $username)
     {
         $sql = "SELECT * FROM users WHERE username = :username";
@@ -123,10 +128,14 @@ class UserRepository
      * @param int $lockMinutes The duration of the lockout in minutes
      */
     public function recordFailedLoginAttempt(string $username, int $maxAttempts, int $lockMinutes): void {
+        $maxAttempts = (int)$maxAttempts;
+        $lockMinutes = (int)$lockMinutes;
+        $lockUntil = date("Y-m-d H:i:s", time() + ($lockMinutes * 60));
+
         $sql = "UPDATE users 
         SET login_attempts = login_attempts + 1,
             locked_until = CASE
-                WHEN login_attempts + 1 >= :maxAttempts THEN DATE_ADD(NOW(), INTERVAL :lockMinutes MINUTE)
+                WHEN login_attempts + 1 >= :maxAttempts THEN :lockUntil
                 ELSE locked_until
             END
         WHERE username = :username";
@@ -134,7 +143,7 @@ class UserRepository
         $stmt->execute([
             ":username" => $username,
             ":maxAttempts" => $maxAttempts,
-            ":lockMinutes" => $lockMinutes
+            ":lockUntil" => $lockUntil
         ]);
     }
 

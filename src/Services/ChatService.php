@@ -49,6 +49,13 @@ class ChatService
         $history = $this->chatRepository->getMessagesByConversationIdForUser($convoId, $userId);
         $context = array_slice($history, -10); // limit to last 10 messages for context
 
+        // Check if Gemini API is available
+        if (!$this->gemini) {
+            return [
+                "responseMessage" => "Chat service is currently unavailable. Please try again later.",
+            ];
+        }
+
          // Get response from Gemini API
         try {
             $reply = $this->gemini->geminiChat($context);

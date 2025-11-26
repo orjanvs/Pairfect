@@ -75,6 +75,8 @@ class GeminiAPI
             CURLOPT_POST => true, // Defining request as POST.
             CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE), // Attaches payload and encodes to JSON
             CURLOPT_RETURNTRANSFER => true, // Return response as string
+            CURLOPT_TIMEOUT => 30, // Timeout after 30 seconds
+            CURLOPT_CONNECTTIMEOUT => 10, // Connection timeout after 10 seconds
         ]);
         $response = curl_exec($ch);
         $curl_error = curl_error($ch);

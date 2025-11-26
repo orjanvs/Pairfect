@@ -21,6 +21,8 @@ if (!$user || (int)$user->userid !== $userId) {
 }
 
 // Handle POST requests
+$updateErrors = [];
+$passwordErrors = [];
 $message = null;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -32,17 +34,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             case "update_profile":
                 $updateErrors = [];
-                $newUsername = trim($_POST["username"]);
-                $newEmail    = trim($_POST["email"]);
+                $newUsername = trim($_POST["username"]) ?? "";
+                $newEmail    = trim($_POST["email"]) ?? "";
 
                 // Validate inputs
-                $errors = array_merge(
+                $updateErrors = array_merge(
                     Validator::validateUsername($newUsername),
                     Validator::validateEmail($newEmail)
                 );
 
-                if (empty($errors)) {
-
+                if (empty($updateErrors)) {
                     // Check for uniqueness
                     if (
                         $userService->usernameExists($newUsername) &&
@@ -57,11 +58,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     ) {
                         $updateErrors[] = "E-mail already registered.";
                     }
+                }
 
-                    if (!empty($updateErrors)) {
-                        break;
-                    }
-
+                if (empty($updateErrors)) {
                     // Update user details
                     $updated = $userService->updateUser($userId, $newUsername, $newEmail);
 
@@ -93,15 +92,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $passwordErrors[] = "Current password is incorrect.";
                 }
 
-                if (!empty($passwordErrors)) {
-                    break;
+                if (empty($passwordErrors)) {
+                    // Update to new password
+                    $changed = $userService->updateUserPassword($userId, $new);
+                    $message = $changed ? "Password updated successfully." : "Failed to update password.";
                 }
-
-                // Update to new password
-                $changed = $userService->updateUserPassword($userId, $new);
-
-                // Verify update success
-                $message = $changed ? "Password updated successfully." : "Failed to update password.";
                 break;
 
             case "delete_account":

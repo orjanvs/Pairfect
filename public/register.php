@@ -33,19 +33,23 @@ try {
                 $errors[] = "Username already taken.";
             }
 
-            $registered = $userService->registerUser($username, $email, $password);
+            if (empty($errors)) {
+                // Register the user
+                $registered = $userService->registerUser($username, $email, $password);
 
-            if ($registered) {
-                $logIn = $userService->loginUser($username, $password);
-                session_regenerate_id(true); // Prevent session fixation
-                $_SESSION["user"]["userid"] = $logIn->userid;
-                $_SESSION["user"]["username"] = $logIn->username;
-                $_SESSION["user"]["is_logged_in"] = true;
+                // If registration successful, log in the user
+                if ($registered) {
+                    $logIn = $userService->loginUser($username, $password);
+                    session_regenerate_id(true); // Prevent session fixation
+                    $_SESSION["user"]["userid"] = $logIn->userid;
+                    $_SESSION["user"]["username"] = $logIn->username;
+                    $_SESSION["user"]["is_logged_in"] = true;
 
-                header("Location: index.php");
-                exit;
-            } else {
-                $errors[] = "Failed to register user.";
+                    header("Location: index.php");
+                    exit;
+                } else {
+                    $errors[] = "Failed to register user.";
+                }
             }
         }
     }

@@ -5,6 +5,8 @@ use App\Repositories\UserRepository;
 class UserService
 {
     private UserRepository $userRepository;
+    private const MAX_LOGIN_ATTEMPTS = 5;
+    private const LOCKOUT_DURATION = 30; // in minutes
 
     public function __construct(UserRepository $userRepository)
     {
@@ -27,7 +29,7 @@ class UserService
     // Login user
     public function loginUser(string $username, string $password)
     {
-        $user = $this->userRepository->getUserByUsername($username);
+        $user = $this->getUser($username);
         if (!$user) {
             return null;
         }
@@ -38,7 +40,7 @@ class UserService
         }
 
         if (!password_verify($password, $user->password_hash)) {
-            $this->userRepository->recordFailedLoginAttempt($user->username, 5, 30); // 5 attempts, 30 minutes lockout
+            $this->userRepository->recordFailedLoginAttempt($user->username, self::MAX_LOGIN_ATTEMPTS, self::LOCKOUT_DURATION);
             return null;
         }
 
