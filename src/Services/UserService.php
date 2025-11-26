@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use App\Repositories\UserRepository;
@@ -32,7 +31,7 @@ class UserService
      * Login user
      * @param string $username The username of the user
      * @param string $password The password of the user
-     * @return mixed The user object if login is successful, null if not, or an array if locked out
+     * @return mixed object|array|null User object if successful, lock info array if locked, null if failed
      */
     public function loginUser(string $username, string $password)
     {
