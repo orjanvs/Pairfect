@@ -137,14 +137,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <?php if ($message): ?>
         <div class="message">
-            <?php echo htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8"); ?>
+            <?= htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8"); ?>
         </div>
     <?php endif; ?>
 
     <h2>Profile Information</h2>
     <div class="profile-info">
-        <p>Username: <?php echo htmlspecialchars($user->username, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8"); ?></p>
-        <p>Email: <?php echo htmlspecialchars($user->email, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8"); ?></p>
+        <p>Username: <?= htmlspecialchars($user->username, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8"); ?></p>
+        <p>Email: <?= htmlspecialchars($user->email, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8"); ?></p>
     </div>
 
     <h2>Update Profile</h2>
@@ -153,7 +153,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="errors" role="alert" aria-live="assertive">
             <ul>
                 <?php foreach ($updateErrors as $e): ?>
-                    <li><?php echo htmlspecialchars($e, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8"); ?></li>
+                    <li><?= htmlspecialchars($e, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8"); ?></li>
                 <?php endforeach; ?>
             </ul>
         </div>
@@ -162,10 +162,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <form method="post">
         <input type="hidden" name="action" value="update_profile">
         <label for="username">New username:
-            <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($user->username, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8"); ?>" required>
+            <input type="text" id="username" name="username" value="<?= htmlspecialchars($user->username, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8"); ?>" required>
         </label><br>
         <label for="email">New email:
-            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user->email, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8"); ?>" required>
+            <input type="email" id="email" name="email" value="<?= htmlspecialchars($user->email, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8"); ?>" required>
         </label><br>
         <button type="submit">Save</button>
     </form>
@@ -176,7 +176,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="errors" role="alert" aria-live="assertive">
             <ul>
                 <?php foreach ($passwordErrors as $e): ?>
-                    <li><?php echo htmlspecialchars($e, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8"); ?></li>
+                    <li><?= htmlspecialchars($e, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8"); ?></li>
                 <?php endforeach; ?>
             </ul>
         </div>

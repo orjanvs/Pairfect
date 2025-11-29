@@ -85,7 +85,7 @@ try {
         </ul>
     <?php endif; ?>
 
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"], ENT_QUOTES, "UTF-8"); ?>">
+    <form method="post" action="<?= htmlspecialchars($_SERVER["PHP_SELF"], ENT_QUOTES, "UTF-8"); ?>">
         <label for="username">Username:</label>
         <input type="text" name="username" id="username" required placeholder="Username">
 
